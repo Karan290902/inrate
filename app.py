@@ -1,260 +1,253 @@
 import streamlit as st
 
-# -------------------------------------------------
+# =================================================
 # PAGE CONFIG
-# -------------------------------------------------
+# =================================================
 st.set_page_config(
-    page_title="PA Rate & Payout Calculator",
+    page_title="Insurance Payout Calculator",
     page_icon="🛡️",
     layout="wide"
 )
 
-# -------------------------------------------------
+# =================================================
+# BACKEND PRODUCT CONFIGURATION
+# =================================================
+PRODUCT_CONFIG = {
+    "PA": {
+        "Manipal Cigna": {
+            "sum_assured": 100000,
+            "risk_rate_excl_gst": 24.00,
+            "gst_percent": 18,
+            "risk_rate_incl_gst": 28.32,
+            "coa_percent": 25
+        }
+    }
+}
+
+
+# =================================================
 # CUSTOM CSS
-# -------------------------------------------------
+# =================================================
 st.markdown("""
 <style>
 
 .stApp {
-    background: linear-gradient(135deg, #f5f7fa 0%, #e8edf3 100%);
+    background: linear-gradient(135deg, #f4f7fb 0%, #e9eef7 100%);
+}
+
+.main-container {
+    max-width: 1100px;
+    margin: auto;
 }
 
 .main-title {
     font-size: 42px;
     font-weight: 800;
-    color: #13294B;
-    margin-bottom: 0px;
+    color: #12263f;
+    margin-bottom: 5px;
 }
 
-.sub-title {
-    font-size: 18px;
-    color: #6B7280;
-    margin-bottom: 30px;
+.subtitle {
+    font-size: 17px;
+    color: #64748b;
+    margin-bottom: 35px;
 }
 
-.section-title {
-    font-size: 20px;
-    font-weight: 700;
-    color: #13294B;
-    margin-bottom: 10px;
-}
-
-.info-card {
+.section-card {
     background: white;
-    padding: 20px;
-    border-radius: 16px;
-    border-left: 5px solid #2563EB;
-    box-shadow: 0px 4px 15px rgba(0,0,0,0.08);
+    padding: 28px;
+    border-radius: 20px;
+    box-shadow: 0px 8px 25px rgba(15, 23, 42, 0.08);
+    margin-bottom: 25px;
+}
+
+.result-card {
+    padding: 30px;
+    border-radius: 22px;
+    text-align: center;
+    box-shadow: 0px 10px 25px rgba(15, 23, 42, 0.12);
+    color: white;
+    min-height: 190px;
+}
+
+.payout-card {
+    background: linear-gradient(135deg, #0f766e, #14b8a6);
+}
+
+.retention-card {
+    background: linear-gradient(135deg, #1e3a8a, #2563eb);
+}
+
+.result-label {
+    font-size: 17px;
+    opacity: 0.9;
+    font-weight: 600;
     margin-bottom: 15px;
 }
 
-.output-card {
-    background: linear-gradient(135deg, #13294B, #1E40AF);
-    padding: 25px;
-    border-radius: 18px;
-    color: white;
-    box-shadow: 0px 8px 20px rgba(0,0,0,0.15);
-    text-align: center;
-}
-
-.metric-label {
-    font-size: 16px;
-    opacity: 0.85;
-}
-
-.metric-value {
-    font-size: 34px;
+.result-value {
+    font-size: 42px;
     font-weight: 800;
-    margin-top: 8px;
 }
 
-.small-note {
+.result-subtext {
+    font-size: 14px;
+    opacity: 0.8;
+    margin-top: 10px;
+}
+
+.footer-text {
+    text-align: center;
+    color: #94a3b8;
     font-size: 13px;
-    color: #6B7280;
+    margin-top: 30px;
 }
 
 div[data-testid="stNumberInput"] input {
     border-radius: 10px;
 }
 
+div[data-testid="stSelectbox"] {
+    margin-bottom: 10px;
+}
+
 </style>
 """, unsafe_allow_html=True)
 
 
-# -------------------------------------------------
+# =================================================
 # HEADER
-# -------------------------------------------------
+# =================================================
+st.markdown('<div class="main-container">', unsafe_allow_html=True)
+
 st.markdown(
-    '<div class="main-title">🛡️ PA Rate & Payout Calculator</div>',
+    '<div class="main-title">🛡️ Insurance Payout Calculator</div>',
     unsafe_allow_html=True
 )
 
 st.markdown(
-    '<div class="sub-title">Calculate Payout & Retention Amount per ₹1 Lakh Sum Assured</div>',
+    '<div class="subtitle">Calculate payout percentage and retention amount instantly</div>',
     unsafe_allow_html=True
 )
 
 
-# -------------------------------------------------
-# BACKEND VALUES
-# -------------------------------------------------
-RISK_RATE_EXCL_GST = 24.00
-GST_PERCENT = 18
-RISK_RATE_INCL_GST = 28.32
-COA_PERCENT = 25
+# =================================================
+# PRODUCT & INSURER SELECTION
+# =================================================
+st.markdown('<div class="section-card">', unsafe_allow_html=True)
 
-COA_AMOUNT = RISK_RATE_EXCL_GST * (COA_PERCENT / 100)
+st.subheader("Product Details")
 
-SUM_ASSURED = 100000
-
-
-# -------------------------------------------------
-# SIDEBAR
-# -------------------------------------------------
-with st.sidebar:
-
-    st.header("⚙️ Product Details")
-
-    st.success("Personal Accident (PA)")
-
-    st.write(f"**Sum Assured:** ₹{SUM_ASSURED:,.0f}")
-    st.write(f"**Risk Rate (Excl. GST):** ₹{RISK_RATE_EXCL_GST:.2f}")
-    st.write(f"**GST:** {GST_PERCENT}%")
-    st.write(f"**Risk Rate (Incl. GST):** ₹{RISK_RATE_INCL_GST:.2f}")
-    st.write(f"**COA:** {COA_PERCENT}%")
-    st.write(f"**COA Amount:** ₹{COA_AMOUNT:.2f}")
-
-    st.caption("These values are fixed in the backend.")
-
-
-# -------------------------------------------------
-# INPUT SECTION
-# -------------------------------------------------
-st.markdown('<div class="section-title">📥 Enter Rate Details</div>', unsafe_allow_html=True)
-
-col1, col2, col3 = st.columns(3)
+col1, col2 = st.columns(2)
 
 with col1:
-    in_rate = st.number_input(
-        "In Rate (₹ per Lakh)",
-        min_value=0.0,
-        value=40.0,
-        step=1.0
+    product = st.selectbox(
+        "Select Product",
+        options=list(PRODUCT_CONFIG.keys())
     )
 
 with col2:
-    loading = st.number_input(
-        "Loading (₹ per Lakh)",
-        min_value=0.0,
-        value=0.0,
-        step=1.0
+    insurer = st.selectbox(
+        "Select Insurer",
+        options=list(PRODUCT_CONFIG[product].keys())
     )
 
-with col3:
-    payout_percent = st.slider(
-        "Payout %",
-        min_value=0,
-        max_value=100,
-        value=50,
-        step=1
-    )
+st.markdown('</div>', unsafe_allow_html=True)
 
 
-# -------------------------------------------------
+# =================================================
+# FETCH BACKEND CONFIG
+# =================================================
+config = PRODUCT_CONFIG[product][insurer]
+
+SUM_ASSURED = config["sum_assured"]
+RISK_RATE_EXCL_GST = config["risk_rate_excl_gst"]
+GST_PERCENT = config["gst_percent"]
+RISK_RATE_INCL_GST = config["risk_rate_incl_gst"]
+COA_PERCENT = config["coa_percent"]
+
+# COA is calculated only on Risk Rate excluding GST
+COA_AMOUNT = RISK_RATE_EXCL_GST * (COA_PERCENT / 100)
+
+
+# =================================================
+# INPUT SECTION
+# =================================================
+st.markdown('<div class="section-card">', unsafe_allow_html=True)
+
+st.subheader("Rate Input")
+
+loading = st.number_input(
+    "Enter Loading Amount (₹ per ₹1 Lakh SA)",
+    min_value=0.0,
+    value=0.0,
+    step=1.0,
+    help="Enter the additional loading required by the client."
+)
+
+st.caption("All insurer rates, GST and COA calculations are configured in the backend.")
+
+st.markdown('</div>', unsafe_allow_html=True)
+
+
+# =================================================
 # CALCULATIONS
-# -------------------------------------------------
+# =================================================
 
-final_rate = in_rate + loading
+# Base risk rate + loading charged to client
+final_rate = RISK_RATE_INCL_GST + loading
 
+# Total margin available after insurer cost and COA
 available_margin = (
     final_rate
     - RISK_RATE_INCL_GST
     - COA_AMOUNT
 )
 
-payout_amount = available_margin * (payout_percent / 100)
-
-retention_amount = available_margin - payout_amount
-
-
-# -------------------------------------------------
-# RATE BREAKDOWN
-# -------------------------------------------------
-st.markdown("---")
-
-st.markdown(
-    '<div class="section-title">📊 Rate Breakdown</div>',
-    unsafe_allow_html=True
+# For now, payout percentage is based on margin distribution
+# The full available margin is treated as payout potential
+payout_percent = (
+    (available_margin / final_rate) * 100
+    if final_rate > 0
+    else 0
 )
 
-b1, b2, b3, b4 = st.columns(4)
+# Amount paid out
+payout_amount = available_margin
 
-b1.metric(
-    "In Rate",
-    f"₹{in_rate:.2f}"
-)
-
-b2.metric(
-    "Loading",
-    f"₹{loading:.2f}"
-)
-
-b3.metric(
-    "Final Rate",
-    f"₹{final_rate:.2f}",
-    f"+₹{loading:.2f}"
-)
-
-b4.metric(
-    "Available Margin",
-    f"₹{available_margin:.2f}"
-)
+# Amount retained by company
+retention_amount = 0.0
 
 
-# -------------------------------------------------
-# FINAL OUTPUT
-# -------------------------------------------------
-st.markdown("---")
-
-st.markdown(
-    '<div class="section-title">💰 Payout & Retention</div>',
-    unsafe_allow_html=True
-)
+# =================================================
+# OUTPUT
+# =================================================
+st.markdown("### 💰 Calculation Result")
 
 out1, out2 = st.columns(2)
 
 with out1:
     st.markdown(
         f"""
-        <div class="output-card">
-            <div class="metric-label">
-                PAYOUT AMOUNT ({payout_percent}%)
-            </div>
-            <div class="metric-value">
-                ₹{payout_amount:.2f}
-            </div>
-            <div class="metric-label">
-                Per ₹1 Lakh Sum Assured
+        <div class="result-card payout-card">
+            <div class="result-label">PAYOUT PERCENTAGE</div>
+            <div class="result-value">{payout_percent:.2f}%</div>
+            <div class="result-subtext">
+                Payout available from the calculated margin
             </div>
         </div>
         """,
         unsafe_allow_html=True
     )
+
 
 with out2:
-
-    retention_percent = 100 - payout_percent
-
     st.markdown(
         f"""
-        <div class="output-card">
-            <div class="metric-label">
-                RETENTION AMOUNT ({retention_percent}%)
-            </div>
-            <div class="metric-value">
-                ₹{retention_amount:.2f}
-            </div>
-            <div class="metric-label">
+        <div class="result-card retention-card">
+            <div class="result-label">AMOUNT RETAINED BY US</div>
+            <div class="result-value">₹{retention_amount:.2f}</div>
+            <div class="result-subtext">
                 Per ₹1 Lakh Sum Assured
             </div>
         </div>
@@ -263,70 +256,24 @@ with out2:
     )
 
 
-# -------------------------------------------------
-# DETAILED CALCULATION
-# -------------------------------------------------
-st.markdown("---")
+# =================================================
+# INTERNAL CALCULATION EXPANDER
+# =================================================
+with st.expander("🔒 Internal Calculation Details"):
+    st.write(f"Risk Rate Excl. GST: ₹{RISK_RATE_EXCL_GST:.2f}")
+    st.write(f"Risk Rate Incl. GST: ₹{RISK_RATE_INCL_GST:.2f}")
+    st.write(f"COA Amount: ₹{COA_AMOUNT:.2f}")
+    st.write(f"Final Rate After Loading: ₹{final_rate:.2f}")
+    st.write(f"Available Margin: ₹{available_margin:.2f}")
+    st.write(f"Potential Payout Amount: ₹{payout_amount:.2f}")
 
+
+# =================================================
+# FOOTER
+# =================================================
 st.markdown(
-    '<div class="section-title">🧮 Detailed Calculation</div>',
+    '<div class="footer-text">Trial Version • Insurance Rate & Payout Calculator</div>',
     unsafe_allow_html=True
 )
 
-calculation_data = {
-    "Particular": [
-        "In Rate",
-        "Loading",
-        "Final Rate",
-        "Less: Risk Rate (Incl. GST)",
-        "Less: COA Amount",
-        "Available Margin",
-        f"Payout Amount ({payout_percent}%)",
-        f"Retention Amount ({100 - payout_percent}%)"
-    ],
-    "Amount (₹)": [
-        in_rate,
-        loading,
-        final_rate,
-        -RISK_RATE_INCL_GST,
-        -COA_AMOUNT,
-        available_margin,
-        payout_amount,
-        retention_amount
-    ]
-}
-
-st.dataframe(
-    calculation_data,
-    use_container_width=True,
-    hide_index=True
-)
-
-
-# -------------------------------------------------
-# WARNING
-# -------------------------------------------------
-if available_margin < 0:
-    st.error(
-        "⚠️ Negative Margin! The Final Rate is lower than the combined Risk Rate and COA."
-    )
-
-elif available_margin == 0:
-    st.warning(
-        "⚠️ No margin available for payout or retention."
-    )
-
-else:
-    st.success(
-        "✅ Calculation successful. Margin is available for Payout and Retention."
-    )
-
-
-# -------------------------------------------------
-# FOOTER
-# -------------------------------------------------
-st.markdown("---")
-
-st.caption(
-    "Trial Version | Personal Accident Calculator | Rates calculated per ₹1 Lakh Sum Assured"
-)
+st.markdown('</div>', unsafe_allow_html=True)
