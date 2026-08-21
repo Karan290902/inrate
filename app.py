@@ -1,5 +1,8 @@
 import streamlit as st
 import pandas as pd
+from pathlib import Path
+from datetime import datetime
+import io
 
 # ============================================================
 # PAGE CONFIG
@@ -14,203 +17,43 @@ st.set_page_config(
 
 
 # ============================================================
-# BACKEND RATE MASTER
-#
-# insurer_base_rate = Rate excluding GST
-# with_gst_rate      = Actual amount including GST
-# coa_percent        = COA percentage on base rate
-#
-# X Amount = Client Rate - With GST Rate
-# COA Amount = Base Rate × COA %
-# In-Rate Amount = X Amount + COA Amount
-# ============================================================
-
-RATE_MASTER = {
-
-    "PA": {
-
-        "Care": {
-            "insurer_base_rate": 9.00,
-            "with_gst_rate": 10.62,
-            "coa_percent": 8.5
-        },
-
-        "Cigna Manipal": {
-            "insurer_base_rate": 24.00,
-            "with_gst_rate": 28.32,
-            "coa_percent": 25.0
-        },
-
-        "Aditya Birla": {
-            "insurer_base_rate": 21.00,
-            "with_gst_rate": 21.00,
-            "coa_percent": 25.0
-        }
-    },
-
-
-    "Hospicash": {
-
-        "ZUNO": {
-            "insurer_base_rate": 150.00,
-            "with_gst_rate": 177.00,
-            "coa_percent": 0.0
-        }
-    },
-
-
-    "PA HOSPICASH": {
-
-        "Magma": {
-            "insurer_base_rate": 424.00,
-            "with_gst_rate": 500.32,
-            "coa_percent": 10.0
-        },
-
-        "Tata": {
-            "insurer_base_rate": 169.00,
-            "with_gst_rate": 199.42,
-            "coa_percent": 25.0
-        }
-    },
-
-
-    "PA + Cancer Specific": {
-
-        "Cigna Manipal": {
-            "insurer_base_rate": 180.00,
-            "with_gst_rate": 212.40,
-            "coa_percent": 25.0
-        }
-    },
-
-
-    "Cancer Specific": {
-
-        "Cigna Manipal": {
-            "insurer_base_rate": 156.00,
-            "with_gst_rate": 184.08,
-            "coa_percent": 25.0
-        }
-    },
-
-
-    "GTL": {
-
-        "IPRU": {
-            "insurer_base_rate": 450.00,
-            "with_gst_rate": 531.00,
-            "coa_percent": 0.0
-        },
-
-        "Aviva": {
-            "insurer_base_rate": 320.30,
-            "with_gst_rate": 377.95,
-            "coa_percent": 10.0
-        }
-    },
-
-
-    "PA + CI": {
-
-        "Magma": {
-            "insurer_base_rate": 270.00,
-            "with_gst_rate": 318.60,
-            "coa_percent": 10.0
-        },
-
-        "Cigna Manipal": {
-            "insurer_base_rate": 368.00,
-            "with_gst_rate": 434.24,
-            "coa_percent": 25.0
-        }
-    },
-
-
-    "CI": {
-
-        "Cigna Manipal": {
-            "insurer_base_rate": 344.00,
-            "with_gst_rate": 405.92,
-            "coa_percent": 25.0
-        }
-    },
-
-
-    "Health": {
-
-        "Aditya Birla": {
-            "insurer_base_rate": 1879.00,
-            "with_gst_rate": 2217.22,
-            "coa_percent": 25.0
-        },
-
-        "18-60": {
-            "insurer_base_rate": 2699.00,
-            "with_gst_rate": 3184.82,
-            "coa_percent": 0.0
-        },
-
-        "3369 Plan": {
-            "insurer_base_rate": 3369.00,
-            "with_gst_rate": 3975.42,
-            "coa_percent": 0.0
-        }
-    }
-}
-
-
-# ============================================================
 # CUSTOM CSS
 # ============================================================
 
-st.markdown("""
+st.markdown(
+    """
 <style>
 
 .stApp {
     background:
-        radial-gradient(
-            circle at 5% 0%,
-            rgba(37, 99, 235, 0.10),
-            transparent 30%
-        ),
-        radial-gradient(
-            circle at 95% 100%,
-            rgba(16, 185, 129, 0.08),
-            transparent 30%
-        ),
+        radial-gradient(circle at 0% 0%, rgba(37, 99, 235, 0.08), transparent 30%),
+        radial-gradient(circle at 100% 100%, rgba(20, 184, 166, 0.07), transparent 30%),
         #f8fafc;
 }
 
 .block-container {
-    max-width: 1150px;
+    max-width: 1200px;
     padding-top: 2rem;
     padding-bottom: 2rem;
 }
 
-
-/* ============================================================
-   APP HEADER
-============================================================ */
+/* HEADER */
 
 .app-title {
     font-size: 36px;
     font-weight: 800;
     color: #0f172a;
     letter-spacing: -1px;
-    margin-bottom: 5px;
+    margin-bottom: 4px;
 }
 
 .app-subtitle {
-    font-size: 15px;
+    font-size: 16px;
     color: #64748b;
-    margin-bottom: 35px;
+    margin-bottom: 32px;
 }
 
-
-/* ============================================================
-   SECTION HEADINGS
-============================================================ */
+/* SECTION HEADINGS */
 
 .section-kicker {
     font-size: 11px;
@@ -221,10 +64,10 @@ st.markdown("""
 }
 
 .section-title {
-    font-size: 25px;
+    font-size: 24px;
     font-weight: 800;
     color: #0f172a;
-    margin-bottom: 7px;
+    margin-bottom: 5px;
 }
 
 .section-description {
@@ -233,10 +76,17 @@ st.markdown("""
     margin-bottom: 18px;
 }
 
+/* INPUT AREA */
 
-/* ============================================================
-   INPUTS
-============================================================ */
+.input-container {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    padding: 20px;
+    margin-bottom: 24px;
+}
+
+/* INPUTS */
 
 div[data-testid="stSelectbox"] > div > div {
     border-radius: 10px;
@@ -246,55 +96,24 @@ div[data-testid="stNumberInput"] input {
     border-radius: 10px;
 }
 
-div[data-testid="stSelectbox"] label,
-div[data-testid="stNumberInput"] label {
+/* BUTTON */
+
+div.stButton > button {
+    width: 100%;
+    border-radius: 10px;
     font-weight: 700;
-    color: #334155;
+    padding: 0.65rem;
 }
 
-
-/* ============================================================
-   RESULT CARDS
-============================================================ */
+/* RESULT CARDS */
 
 .result-card {
     border-radius: 18px;
-    padding: 24px;
-    min-height: 165px;
+    padding: 22px;
+    min-height: 155px;
     color: white;
-    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.14);
-}
-
-.with-gst-card {
-    background: linear-gradient(
-        135deg,
-        #4338ca,
-        #6366f1
-    );
-}
-
-.x-card {
-    background: linear-gradient(
-        135deg,
-        #0f766e,
-        #14b8a6
-    );
-}
-
-.inrate-card {
-    background: linear-gradient(
-        135deg,
-        #c2410c,
-        #f97316
-    );
-}
-
-.coa-card {
-    background: linear-gradient(
-        135deg,
-        #111827,
-        #334155
-    );
+    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.12);
+    margin-bottom: 12px;
 }
 
 .card-label {
@@ -302,41 +121,56 @@ div[data-testid="stNumberInput"] label {
     font-weight: 800;
     letter-spacing: 1px;
     opacity: 0.85;
-    margin-bottom: 18px;
+    margin-bottom: 16px;
 }
 
 .card-value {
-    font-size: 34px;
+    font-size: 30px;
     font-weight: 850;
-    letter-spacing: -1px;
+    letter-spacing: -0.8px;
 }
 
 .card-note {
     font-size: 12px;
-    margin-top: 15px;
+    margin-top: 14px;
     opacity: 0.82;
     line-height: 1.4;
 }
 
+.input-card {
+    background: linear-gradient(135deg, #4338ca, #6366f1);
+}
 
-/* ============================================================
-   FINAL RESULT
-============================================================ */
+.base-card {
+    background: linear-gradient(135deg, #0f766e, #14b8a6);
+}
+
+.x-card {
+    background: linear-gradient(135deg, #b45309, #f59e0b);
+}
+
+.netx-card {
+    background: linear-gradient(135deg, #7c2d12, #ea580c);
+}
+
+.coa-card {
+    background: linear-gradient(135deg, #334155, #475569);
+}
+
+.inrate-card {
+    background: linear-gradient(135deg, #047857, #10b981);
+}
+
+/* FINAL RESULT */
 
 .final-result {
-    background: linear-gradient(
-        135deg,
-        #1d4ed8,
-        #2563eb
-    );
+    background: linear-gradient(135deg, #1d4ed8, #2563eb);
     color: white;
-    padding: 28px;
-    border-radius: 20px;
+    padding: 30px;
+    border-radius: 22px;
     text-align: center;
-    margin-top: 25px;
-    box-shadow:
-        0 15px 35px
-        rgba(37, 99, 235, 0.22);
+    margin-top: 18px;
+    box-shadow: 0 15px 35px rgba(37, 99, 235, 0.22);
 }
 
 .final-label {
@@ -347,27 +181,32 @@ div[data-testid="stNumberInput"] label {
 }
 
 .final-value {
-    font-size: 48px;
+    font-size: 52px;
     font-weight: 850;
     margin-top: 8px;
 }
 
+/* INFO BOX */
 
-/* ============================================================
-   FOOTER
-============================================================ */
+.info-box {
+    background: #eff6ff;
+    border-left: 4px solid #2563eb;
+    padding: 14px 18px;
+    border-radius: 10px;
+    color: #1e3a8a;
+    margin-top: 18px;
+}
+
+/* FOOTER */
 
 .footer {
     text-align: center;
     color: #94a3b8;
     font-size: 12px;
-    margin-top: 20px;
+    margin-top: 30px;
 }
 
-
-/* ============================================================
-   HIDE STREAMLIT
-============================================================ */
+/* STREAMLIT */
 
 #MainMenu {
     visibility: hidden;
@@ -378,7 +217,125 @@ footer {
 }
 
 </style>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True
+)
+
+
+# ============================================================
+# RATE MASTER LOADING
+# ============================================================
+
+@st.cache_data
+def load_rate_master():
+
+    file_path = Path("rate_master.csv")
+
+    if not file_path.exists():
+        return None, "rate_master.csv file not found."
+
+    try:
+
+        rates = pd.read_csv(file_path)
+
+    except Exception as e:
+
+        return None, f"Unable to read rate master: {str(e)}"
+
+    if rates.empty:
+        return None, "Rate master is empty."
+
+    # Clean column names
+    rates.columns = rates.columns.str.strip()
+
+    required_columns = [
+        "Product",
+        "Insurer",
+        "Base Rate",
+        "COA %"
+    ]
+
+    missing_columns = [
+        col for col in required_columns
+        if col not in rates.columns
+    ]
+
+    if missing_columns:
+
+        return (
+            None,
+            f"Missing required columns: {', '.join(missing_columns)}"
+        )
+
+    # Clean text columns
+    rates["Product"] = (
+        rates["Product"]
+        .astype(str)
+        .str.strip()
+    )
+
+    rates["Insurer"] = (
+        rates["Insurer"]
+        .astype(str)
+        .str.strip()
+    )
+
+    # Remove empty text values
+    rates = rates[
+        (rates["Product"] != "")
+        &
+        (rates["Insurer"] != "")
+        &
+        (rates["Product"].str.lower() != "nan")
+        &
+        (rates["Insurer"].str.lower() != "nan")
+    ].copy()
+
+    # Convert numeric columns
+    rates["Base Rate"] = pd.to_numeric(
+        rates["Base Rate"],
+        errors="coerce"
+    )
+
+    # Clean COA percentage
+    rates["COA %"] = (
+        rates["COA %"]
+        .astype(str)
+        .str.replace("%", "", regex=False)
+        .str.strip()
+    )
+
+    rates["COA %"] = pd.to_numeric(
+        rates["COA %"],
+        errors="coerce"
+    )
+
+    # Check duplicates
+    duplicates = rates.duplicated(
+        subset=["Product", "Insurer"],
+        keep=False
+    )
+
+    if duplicates.any():
+
+        duplicate_rows = rates.loc[
+            duplicates,
+            ["Product", "Insurer"]
+        ]
+
+        duplicate_text = ", ".join(
+            [
+                f"{row['Product']} - {row['Insurer']}"
+                for _, row in duplicate_rows.iterrows()
+            ]
+        )
+
+        return (
+            None,
+            f"Duplicate Product/Insurer combinations found: {duplicate_text}"
+        )
+
+    return rates, None
 
 
 # ============================================================
@@ -386,62 +343,59 @@ footer {
 # ============================================================
 
 def calculate_inrate(
-    client_rate,
-    insurer_base_rate,
-    with_gst_rate,
+    input_price,
+    base_rate,
     coa_percent
 ):
 
     # --------------------------------------------------------
-    # X AMOUNT
-    # Client Rate - Insurer Rate Including GST
+    # STEP 1
+    # X Amount = Input Price - Base Rate
     # --------------------------------------------------------
 
-    x_amount = (
-        client_rate
-        - with_gst_rate
-    )
-
+    x_amount = input_price - base_rate
 
     # --------------------------------------------------------
-    # COA AMOUNT
-    # COA is calculated on Base Rate excluding GST
+    # STEP 2
+    # Net X Amount = X Amount / 1.18
+    # Removes 18% GST from X
     # --------------------------------------------------------
 
-    coa_amount = (
-        insurer_base_rate
-        * (coa_percent / 100)
-    )
-
+    net_x_amount = x_amount / 1.18
 
     # --------------------------------------------------------
-    # IN-RATE AMOUNT
+    # STEP 3
+    # COA Amount = Base Rate * COA %
     # --------------------------------------------------------
 
-    inrate_amount = (
-        x_amount
-        + coa_amount
-    )
-
+    coa_amount = base_rate * (coa_percent / 100)
 
     # --------------------------------------------------------
-    # FINAL IN-RATE %
+    # STEP 4
+    # In-Rate Amount = Net X Amount + COA Amount
     # --------------------------------------------------------
 
-    if client_rate > 0:
+    inrate_amount = net_x_amount + coa_amount
+
+    # --------------------------------------------------------
+    # STEP 5
+    # Final In-Rate % =
+    # (In-Rate Amount / Input Price) * 100
+    # --------------------------------------------------------
+
+    if input_price > 0:
 
         inrate_percent = (
-            inrate_amount
-            / client_rate
+            inrate_amount / input_price
         ) * 100
 
     else:
 
         inrate_percent = 0
 
-
     return {
         "x_amount": x_amount,
+        "net_x_amount": net_x_amount,
         "coa_amount": coa_amount,
         "inrate_amount": inrate_amount,
         "inrate_percent": inrate_percent
@@ -449,7 +403,66 @@ def calculate_inrate(
 
 
 # ============================================================
-# APP HEADER
+# DOWNLOAD FUNCTION
+# ============================================================
+
+def create_download_file(
+    product,
+    insurer,
+    input_price,
+    base_rate,
+    coa_percent,
+    result
+):
+
+    report = pd.DataFrame(
+        [
+            {
+                "Date & Time": datetime.now().strftime(
+                    "%d-%m-%Y %H:%M:%S"
+                ),
+                "Product": product,
+                "Insurer": insurer,
+                "Input Price": input_price,
+                "Base Rate": base_rate,
+                "COA %": coa_percent,
+                "X Amount": result["x_amount"],
+                "Net X Amount (Excl. GST)": result["net_x_amount"],
+                "COA Amount": result["coa_amount"],
+                "In-Rate Amount": result["inrate_amount"],
+                "Final In-Rate %": result["inrate_percent"]
+            }
+        ]
+    )
+
+    return report.to_csv(
+        index=False
+    ).encode("utf-8")
+
+
+# ============================================================
+# SESSION STATE
+# ============================================================
+
+if "calculated" not in st.session_state:
+    st.session_state.calculated = False
+
+if "result" not in st.session_state:
+    st.session_state.result = None
+
+if "history" not in st.session_state:
+    st.session_state.history = []
+
+
+# ============================================================
+# LOAD RATE MASTER
+# ============================================================
+
+rates, error_message = load_rate_master()
+
+
+# ============================================================
+# HEADER
 # ============================================================
 
 st.markdown(
@@ -459,7 +472,7 @@ st.markdown(
 </div>
 
 <div class="app-subtitle">
-    Calculate the final in-rate percentage using insurer rates including GST and COA.
+    Calculate In-Rate Amount & In-Rate % using backend-configured insurer rates and COA.
 </div>
 """,
     unsafe_allow_html=True
@@ -467,221 +480,549 @@ st.markdown(
 
 
 # ============================================================
-# STEP 01 - INPUT
+# STOP IF RATE MASTER HAS ERROR
+# ============================================================
+
+if error_message:
+
+    st.error(error_message)
+
+    st.info(
+        "Please ensure rate_master.csv exists and contains: "
+        "Product, Insurer, Base Rate, COA %"
+    )
+
+    st.stop()
+
+
+# ============================================================
+# SIDEBAR - RATE MASTER
+# ============================================================
+
+with st.sidebar:
+
+    st.markdown("## 📋 Rate Master")
+
+    st.caption(
+        "Current backend-configured rates"
+    )
+
+    st.dataframe(
+        rates,
+        use_container_width=True,
+        hide_index=True
+    )
+
+
+# ============================================================
+# STEP 01 - CALCULATION INPUT
 # ============================================================
 
 st.markdown(
     """
-<div class="section-kicker">
-    STEP 01
-</div>
-
-<div class="section-title">
-    Calculation Input
-</div>
-
+<div class="section-kicker">STEP 01</div>
+<div class="section-title">Calculation Input</div>
 <div class="section-description">
-    Select the product and insurer, then enter the final rate charged to the client.
+Select the Product and Insurer, then enter the client-side Input Price.
 </div>
 """,
     unsafe_allow_html=True
 )
 
 
-col1, col2, col3 = st.columns(3)
+input_col1, input_col2, input_col3 = st.columns(3)
 
 
-# ============================================================
 # PRODUCT
-# ============================================================
 
-with col1:
+with input_col1:
+
+    products = sorted(
+        rates["Product"]
+        .dropna()
+        .unique()
+    )
 
     product = st.selectbox(
         "Product",
-        list(RATE_MASTER.keys())
+        options=products
     )
 
 
-# ============================================================
-# INSURER
-# ============================================================
+# FILTER INSURERS
 
-with col2:
+filtered_rates = rates[
+    rates["Product"] == product
+].copy()
+
+
+# INSURER
+
+with input_col2:
+
+    insurers = sorted(
+        filtered_rates["Insurer"]
+        .dropna()
+        .unique()
+    )
 
     insurer = st.selectbox(
         "Insurer",
-        list(RATE_MASTER[product].keys())
+        options=insurers
+    )
+
+
+# SELECT RATE
+
+selected_row = filtered_rates[
+    filtered_rates["Insurer"] == insurer
+].iloc[0]
+
+base_rate = selected_row["Base Rate"]
+coa_percent = selected_row["COA %"]
+
+
+# INPUT PRICE
+
+with input_col3:
+
+    input_price = st.number_input(
+        "Input Price (₹)",
+        min_value=0.01,
+        value=float(base_rate)
+        if pd.notna(base_rate)
+        else 1.00,
+        step=0.01,
+        format="%.2f"
     )
 
 
 # ============================================================
-# SELECT BACKEND VALUES
+# VALIDATION
 # ============================================================
 
-config = RATE_MASTER[product][insurer]
+validation_error = None
 
-insurer_base_rate = config["insurer_base_rate"]
+if pd.isna(base_rate):
 
-with_gst_rate = config["with_gst_rate"]
+    validation_error = (
+        "Base Rate not configured for this "
+        "Product/Insurer combination."
+    )
 
-coa_percent = config["coa_percent"]
+elif pd.isna(coa_percent):
+
+    validation_error = (
+        "COA % not configured for this "
+        "Product/Insurer combination."
+    )
+
+elif base_rate <= 0:
+
+    validation_error = (
+        "Invalid Base Rate configured for this "
+        "Product/Insurer combination."
+    )
+
+elif coa_percent < 0:
+
+    validation_error = (
+        "Invalid COA % configured for this "
+        "Product/Insurer combination."
+    )
 
 
-# ============================================================
-# CLIENT RATE
-# ============================================================
+if validation_error:
 
-with col3:
+    st.error(validation_error)
 
-    client_rate = st.number_input(
-        "Client Rate (₹)",
-        min_value=0.0,
-        value=float(with_gst_rate),
-        step=1.0
+
+elif input_price < base_rate:
+
+    st.warning(
+        "Input Price is lower than the Base Rate. "
+        "Please verify the entered amount."
     )
 
 
 # ============================================================
-# CALCULATE
+# CALCULATE BUTTON
 # ============================================================
 
-result = calculate_inrate(
-    client_rate=float(client_rate),
-    insurer_base_rate=float(insurer_base_rate),
-    with_gst_rate=float(with_gst_rate),
-    coa_percent=float(coa_percent)
-)
+button_col1, button_col2 = st.columns([3, 1])
+
+
+with button_col1:
+
+    calculate_clicked = st.button(
+        "Calculate In-Rate",
+        type="primary",
+        use_container_width=True
+    )
+
+
+with button_col2:
+
+    reset_clicked = st.button(
+        "Reset Calculator",
+        use_container_width=True
+    )
 
 
 # ============================================================
-# STEP 02 - RESULTS
+# RESET
 # ============================================================
 
-st.markdown("<br>", unsafe_allow_html=True)
+if reset_clicked:
 
-st.markdown(
-    """
-<div class="section-kicker">
-    STEP 02
-</div>
+    st.session_state.calculated = False
+    st.session_state.result = None
 
-<div class="section-title">
-    Calculation Results
-</div>
+    st.rerun()
 
+
+# ============================================================
+# PERFORM CALCULATION
+# ============================================================
+
+if calculate_clicked:
+
+    if validation_error:
+
+        st.error(
+            "Calculation cannot be performed until "
+            "the rate configuration is corrected."
+        )
+
+        st.session_state.calculated = False
+
+    elif input_price <= 0:
+
+        st.error(
+            "Input Price must be greater than ₹0."
+        )
+
+        st.session_state.calculated = False
+
+    else:
+
+        result = calculate_inrate(
+            input_price=float(input_price),
+            base_rate=float(base_rate),
+            coa_percent=float(coa_percent)
+        )
+
+        st.session_state.result = result
+        st.session_state.calculated = True
+
+        # Save history
+
+        history_entry = {
+            "Date & Time": datetime.now().strftime(
+                "%d-%m-%Y %H:%M:%S"
+            ),
+            "Product": product,
+            "Insurer": insurer,
+            "Input Price": float(input_price),
+            "Base Rate": float(base_rate),
+            "COA %": float(coa_percent),
+            "COA Amount": result["coa_amount"],
+            "X Amount": result["x_amount"],
+            "Net X Amount": result["net_x_amount"],
+            "In-Rate Amount": result["inrate_amount"],
+            "In-Rate %": result["inrate_percent"]
+        }
+
+        st.session_state.history.append(
+            history_entry
+        )
+
+
+# ============================================================
+# RESULTS
+# ============================================================
+
+if st.session_state.calculated:
+
+    result = st.session_state.result
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    st.markdown(
+        """
+<div class="section-kicker">STEP 02</div>
+<div class="section-title">Calculation Results</div>
 <div class="section-description">
-    Your calculated in-rate result.
+Your calculated in-rate breakdown.
 </div>
 """,
-    unsafe_allow_html=True
-)
-
-
-r1, r2, r3, r4 = st.columns(4)
-
-
-# ============================================================
-# CARD 1 - WITH GST RATE
-# ============================================================
-
-with r1:
-
-    html = (
-        f'<div class="result-card with-gst-card">'
-        f'<div class="card-label">INSURER RATE WITH GST</div>'
-        f'<div class="card-value">₹{with_gst_rate:,.2f}</div>'
-        f'<div class="card-note">Actual insurer payment</div>'
-        f'</div>'
-    )
-
-    st.markdown(
-        html,
         unsafe_allow_html=True
     )
 
 
-# ============================================================
-# CARD 2 - X AMOUNT
-# ============================================================
+    # --------------------------------------------------------
+    # ROW 1
+    # --------------------------------------------------------
 
-with r2:
+    r1, r2, r3 = st.columns(3)
 
-    html = (
-        f'<div class="result-card x-card">'
-        f'<div class="card-label">X AMOUNT</div>'
-        f'<div class="card-value">₹{result["x_amount"]:,.2f}</div>'
-        f'<div class="card-note">Client Rate − With GST Rate</div>'
+
+    # INPUT PRICE
+
+    with r1:
+
+        html = (
+            f'<div class="result-card input-card">'
+            f'<div class="card-label">INPUT PRICE</div>'
+            f'<div class="card-value">₹{input_price:,.2f}</div>'
+            f'<div class="card-note">Client-side selling price</div>'
+            f'</div>'
+        )
+
+        st.markdown(
+            html,
+            unsafe_allow_html=True
+        )
+
+
+    # BASE RATE
+
+    with r2:
+
+        html = (
+            f'<div class="result-card base-card">'
+            f'<div class="card-label">BASE RATE</div>'
+            f'<div class="card-value">₹{base_rate:,.2f}</div>'
+            f'<div class="card-note">Backend configured insurer rate</div>'
+            f'</div>'
+        )
+
+        st.markdown(
+            html,
+            unsafe_allow_html=True
+        )
+
+
+    # COA AMOUNT
+
+    with r3:
+
+        html = (
+            f'<div class="result-card coa-card">'
+            f'<div class="card-label">COA AMOUNT</div>'
+            f'<div class="card-value">₹{result["coa_amount"]:,.4f}</div>'
+            f'<div class="card-note">'
+            f'COA: {coa_percent:.2f}% of Base Rate'
+            f'</div>'
+            f'</div>'
+        )
+
+        st.markdown(
+            html,
+            unsafe_allow_html=True
+        )
+
+
+    # --------------------------------------------------------
+    # ROW 2
+    # --------------------------------------------------------
+
+    r4, r5, r6 = st.columns(3)
+
+
+    # X AMOUNT
+
+    with r4:
+
+        html = (
+            f'<div class="result-card x-card">'
+            f'<div class="card-label">X AMOUNT</div>'
+            f'<div class="card-value">₹{result["x_amount"]:,.2f}</div>'
+            f'<div class="card-note">Input Price − Base Rate</div>'
+            f'</div>'
+        )
+
+        st.markdown(
+            html,
+            unsafe_allow_html=True
+        )
+
+
+    # NET X AMOUNT
+
+    with r5:
+
+        html = (
+            f'<div class="result-card netx-card">'
+            f'<div class="card-label">NET X AMOUNT</div>'
+            f'<div class="card-value">'
+            f'₹{result["net_x_amount"]:,.4f}'
+            f'</div>'
+            f'<div class="card-note">X Amount excluding 18% GST</div>'
+            f'</div>'
+        )
+
+        st.markdown(
+            html,
+            unsafe_allow_html=True
+        )
+
+
+    # IN-RATE AMOUNT
+
+    with r6:
+
+        html = (
+            f'<div class="result-card inrate-card">'
+            f'<div class="card-label">IN-RATE AMOUNT</div>'
+            f'<div class="card-value">'
+            f'₹{result["inrate_amount"]:,.4f}'
+            f'</div>'
+            f'<div class="card-note">Net X Amount + COA Amount</div>'
+            f'</div>'
+        )
+
+        st.markdown(
+            html,
+            unsafe_allow_html=True
+        )
+
+
+    # ========================================================
+    # FINAL RESULT
+    # ========================================================
+
+    final_html = (
+        f'<div class="final-result">'
+        f'<div class="final-label">FINAL IN-RATE PERCENTAGE</div>'
+        f'<div class="final-value">'
+        f'{result["inrate_percent"]:.2f}%'
+        f'</div>'
         f'</div>'
     )
 
     st.markdown(
-        html,
+        final_html,
         unsafe_allow_html=True
     )
 
 
-# ============================================================
-# CARD 3 - IN-RATE AMOUNT
-# ============================================================
+    # ========================================================
+    # VIEW CALCULATION
+    # ========================================================
 
-with r3:
+    with st.expander("View Calculation"):
 
-    html = (
-        f'<div class="result-card inrate-card">'
-        f'<div class="card-label">IN-RATE AMOUNT</div>'
-        f'<div class="card-value">₹{result["inrate_amount"]:,.2f}</div>'
-        f'<div class="card-note">X Amount + COA Amount</div>'
-        f'</div>'
+        st.markdown(
+            f"""
+### Step 1 — X Amount
+
+**X Amount = Input Price − Base Rate**
+
+₹{input_price:,.2f} − ₹{base_rate:,.2f}
+= **₹{result["x_amount"]:,.2f}**
+
+---
+
+### Step 2 — Net X Amount
+
+**Net X Amount = X Amount ÷ 1.18**
+
+₹{result["x_amount"]:,.4f} ÷ 1.18
+= **₹{result["net_x_amount"]:,.4f}**
+
+---
+
+### Step 3 — COA Amount
+
+**COA Amount = Base Rate × COA %**
+
+₹{base_rate:,.4f} × {coa_percent:.2f}%
+= **₹{result["coa_amount"]:,.4f}**
+
+---
+
+### Step 4 — In-Rate Amount
+
+**In-Rate Amount = Net X Amount + COA Amount**
+
+₹{result["net_x_amount"]:,.4f}
++ ₹{result["coa_amount"]:,.4f}
+
+= **₹{result["inrate_amount"]:,.4f}**
+
+---
+
+### Step 5 — Final In-Rate %
+
+**In-Rate % = (In-Rate Amount ÷ Input Price) × 100**
+
+(₹{result["inrate_amount"]:,.4f}
+÷ ₹{input_price:,.2f}) × 100
+
+= **{result["inrate_percent"]:.2f}%**
+"""
+        )
+
+
+    # ========================================================
+    # DOWNLOAD CALCULATION
+    # ========================================================
+
+    download_data = create_download_file(
+        product=product,
+        insurer=insurer,
+        input_price=float(input_price),
+        base_rate=float(base_rate),
+        coa_percent=float(coa_percent),
+        result=result
     )
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    st.download_button(
+        label="Download Calculation",
+        data=download_data,
+        file_name="insurance_inrate_calculation.csv",
+        mime="text/csv",
+        use_container_width=True
+    )
+
+
+# ============================================================
+# CALCULATION HISTORY
+# ============================================================
+
+if st.session_state.history:
+
+    st.markdown("<br>", unsafe_allow_html=True)
 
     st.markdown(
-        html,
+        """
+<div class="section-kicker">SESSION DATA</div>
+<div class="section-title">Calculation History</div>
+<div class="section-description">
+Successful calculations from the current session.
+</div>
+""",
         unsafe_allow_html=True
     )
 
-
-# ============================================================
-# CARD 4 - COA AMOUNT
-# ============================================================
-
-with r4:
-
-    html = (
-        f'<div class="result-card coa-card">'
-        f'<div class="card-label">COA AMOUNT</div>'
-        f'<div class="card-value">₹{result["coa_amount"]:,.2f}</div>'
-        f'<div class="card-note">'
-        f'{coa_percent:.2f}% of Base Rate'
-        f'</div>'
-        f'</div>'
+    history_df = pd.DataFrame(
+        st.session_state.history
     )
 
-    st.markdown(
-        html,
-        unsafe_allow_html=True
+    st.dataframe(
+        history_df,
+        use_container_width=True,
+        hide_index=True
     )
 
+    if st.button("Clear History"):
 
-# ============================================================
-# FINAL IN-RATE PERCENTAGE
-# ============================================================
+        st.session_state.history = []
 
-final_html = (
-    f'<div class="final-result">'
-    f'<div class="final-label">'
-    f'FINAL IN-RATE PERCENTAGE'
-    f'</div>'
-    f'<div class="final-value">'
-    f'{result["inrate_percent"]:.2f}%'
-    f'</div>'
-    f'</div>'
-)
-
-st.markdown(
-    final_html,
-    unsafe_allow_html=True
-)
+        st.rerun()
 
 
 # ============================================================
