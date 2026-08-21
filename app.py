@@ -34,62 +34,46 @@ PRODUCT_CONFIG = {
 st.markdown("""
 <style>
 
+/* =========================================================
+   GLOBAL
+========================================================= */
+
 .stApp {
     background:
-        radial-gradient(circle at 10% 0%, rgba(37, 99, 235, 0.12), transparent 30%),
-        radial-gradient(circle at 90% 90%, rgba(16, 185, 129, 0.10), transparent 30%),
+        radial-gradient(circle at 10% 0%, rgba(37, 99, 235, 0.10), transparent 30%),
+        radial-gradient(circle at 90% 90%, rgba(16, 185, 129, 0.08), transparent 30%),
         #f8fafc;
 }
 
 .block-container {
     max-width: 1250px;
-    padding-top: 2.2rem;
+    padding-top: 2.5rem;
     padding-bottom: 3rem;
 }
 
-/* HERO */
 
-.hero {
-    background: linear-gradient(
-        135deg,
-        #0b1220 0%,
-        #172554 45%,
-        #1d4ed8 100%
-    );
-    padding: 42px 45px;
-    border-radius: 28px;
-    color: white;
-    margin-bottom: 35px;
-    box-shadow: 0 20px 50px rgba(30, 58, 138, 0.25);
-}
+/* =========================================================
+   APP TITLE
+========================================================= */
 
-.hero-badge {
-    display: inline-block;
-    background: rgba(255, 255, 255, 0.12);
-    border: 1px solid rgba(255, 255, 255, 0.20);
-    padding: 8px 15px;
-    border-radius: 30px;
-    font-size: 12px;
-    font-weight: 800;
-    letter-spacing: 1px;
-    margin-bottom: 16px;
-}
-
-.hero-title {
-    font-size: 44px;
+.app-title {
+    font-size: 36px;
     font-weight: 850;
-    letter-spacing: -1.2px;
-    margin-bottom: 12px;
+    color: #0f172a;
+    letter-spacing: -1px;
+    margin-bottom: 6px;
 }
 
-.hero-subtitle {
-    font-size: 17px;
-    opacity: 0.85;
-    max-width: 780px;
-    line-height: 1.65;
+.app-subtitle {
+    font-size: 16px;
+    color: #64748b;
+    margin-bottom: 32px;
 }
 
-/* SECTION HEADINGS */
+
+/* =========================================================
+   SECTION HEADINGS
+========================================================= */
 
 .section-kicker {
     font-size: 12px;
@@ -112,7 +96,10 @@ st.markdown("""
     margin-bottom: 20px;
 }
 
-/* INPUT CARDS */
+
+/* =========================================================
+   INPUT CARDS
+========================================================= */
 
 .input-card {
     background: rgba(255, 255, 255, 0.97);
@@ -123,7 +110,10 @@ st.markdown("""
     margin-bottom: 32px;
 }
 
-/* RESULT CARDS */
+
+/* =========================================================
+   RESULT CARDS
+========================================================= */
 
 .result-card {
     border-radius: 22px;
@@ -189,7 +179,10 @@ st.markdown("""
     line-height: 1.5;
 }
 
-/* FLOW */
+
+/* =========================================================
+   PAYMENT FLOW
+========================================================= */
 
 .flow-card {
     background: white;
@@ -199,7 +192,10 @@ st.markdown("""
     box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
 }
 
-/* SUMMARY */
+
+/* =========================================================
+   SUMMARY
+========================================================= */
 
 .summary-card {
     background: white;
@@ -210,7 +206,10 @@ st.markdown("""
     box-shadow: 0 8px 25px rgba(15, 23, 42, 0.05);
 }
 
-/* INPUTS */
+
+/* =========================================================
+   INPUT STYLING
+========================================================= */
 
 div[data-testid="stSelectbox"] > div > div {
     border-radius: 12px;
@@ -227,7 +226,10 @@ div[data-testid="stSelectbox"] label {
     color: #334155;
 }
 
-/* STREAMLIT BRANDING */
+
+/* =========================================================
+   STREAMLIT BRANDING
+========================================================= */
 
 #MainMenu {
     visibility: hidden;
@@ -242,28 +244,19 @@ footer {
 
 
 # ============================================================
-# HERO SECTION
+# APP TITLE
 # ============================================================
 
 st.markdown("""
-<div class="hero">
+<div class="app-title">
+    🛡️ Insurance Rate & Retention Calculator
+</div>
 
-    <div class="hero-badge">
-        POLICYGRACE • INTERNAL PRICING TOOL
-    </div>
-
-    <div class="hero-title">
-        Insurance Rate & Retention Calculator
-    </div>
-
-    <div class="hero-subtitle">
-        Analyse client pricing, payout and retention in one place.
-        Safeguard insurer payments while identifying additional
-        retention generated from every quote.
-    </div>
-
+<div class="app-subtitle">
+    Analyse client pricing, payout and retention while safeguarding insurer payments.
 </div>
 """, unsafe_allow_html=True)
+
 
 # ============================================================
 # STEP 01 - PRODUCT & INSURER
@@ -355,17 +348,14 @@ st.markdown('</div>', unsafe_allow_html=True)
 
 payout_decimal = payout_percent / 100
 
-# Payout amount
 payout_amount = client_rate * payout_decimal
 
-# Extra retention generated from the client premium
 extra_retention = (
     client_rate
     - payout_amount
     - INSURER_PAYMENT
 )
 
-# Total retention including fixed COA received later
 total_retention = extra_retention + COA_AMOUNT
 
 
