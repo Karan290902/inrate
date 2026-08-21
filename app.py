@@ -14,7 +14,7 @@ st.set_page_config(
 
 # ============================================================
 # BACKEND RATE MASTER
-# COA % IS INTERNAL ONLY
+# COA % IS NOT DISCLOSED IN THE UI
 # ============================================================
 
 RATE_MASTER = {
@@ -149,6 +149,172 @@ RATE_MASTER = {
 
 
 # ============================================================
+# CUSTOM CSS
+# ============================================================
+
+st.markdown("""
+<style>
+
+.stApp {
+    background:
+        radial-gradient(
+            circle at 0% 0%,
+            rgba(59, 130, 246, 0.10),
+            transparent 32%
+        ),
+        radial-gradient(
+            circle at 100% 100%,
+            rgba(16, 185, 129, 0.08),
+            transparent 32%
+        ),
+        #f8fafc;
+}
+
+.block-container {
+    max-width: 1250px;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+
+.app-title {
+    font-size: 36px;
+    font-weight: 800;
+    color: #172033;
+    letter-spacing: -1px;
+    margin-bottom: 4px;
+}
+
+.app-subtitle {
+    font-size: 15px;
+    color: #64748b;
+    margin-bottom: 32px;
+}
+
+.section-kicker {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.8px;
+    color: #2563eb;
+    margin-bottom: 6px;
+}
+
+.section-title {
+    font-size: 25px;
+    font-weight: 800;
+    color: #172033;
+    margin-bottom: 6px;
+}
+
+.section-description {
+    font-size: 14px;
+    color: #64748b;
+    margin-bottom: 20px;
+}
+
+.result-card {
+    border-radius: 18px;
+    padding: 24px;
+    min-height: 155px;
+    color: white;
+    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.14);
+}
+
+.gross-card {
+    background: linear-gradient(135deg, #4338ca, #6366f1);
+}
+
+.x-card {
+    background: linear-gradient(135deg, #0f766e, #14b8a6);
+}
+
+.inrate-card {
+    background: linear-gradient(135deg, #c2410c, #f97316);
+}
+
+.coa-card {
+    background: linear-gradient(135deg, #1e293b, #475569);
+}
+
+.card-label {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    opacity: 0.88;
+    margin-bottom: 20px;
+}
+
+.card-value {
+    font-size: 34px;
+    font-weight: 800;
+    letter-spacing: -1px;
+}
+
+.card-note {
+    font-size: 12px;
+    margin-top: 18px;
+    opacity: 0.82;
+    line-height: 1.4;
+}
+
+.final-result {
+    background: linear-gradient(135deg, #1d4ed8, #2563eb);
+    color: white;
+    padding: 34px;
+    border-radius: 22px;
+    text-align: center;
+    margin-top: 24px;
+    box-shadow: 0 16px 35px rgba(37, 99, 235, 0.22);
+}
+
+.final-label {
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 1.8px;
+    opacity: 0.85;
+}
+
+.final-value {
+    font-size: 52px;
+    font-weight: 850;
+    margin-top: 10px;
+}
+
+.variable-box {
+    background: #fff7ed;
+    border-left: 4px solid #f97316;
+    padding: 16px 20px;
+    border-radius: 10px;
+    color: #9a3412;
+}
+
+.footer {
+    text-align: center;
+    color: #94a3b8;
+    font-size: 12px;
+    margin-top: 35px;
+}
+
+#MainMenu {
+    visibility: hidden;
+}
+
+footer {
+    visibility: hidden;
+}
+
+</style>
+""", unsafe_allow_html=True)
+
+
+# ============================================================
+# HTML RENDER FUNCTION
+# ============================================================
+
+def render_html(html):
+    st.markdown(html, unsafe_allow_html=True)
+
+
+# ============================================================
 # CALCULATION FUNCTION
 # ============================================================
 
@@ -159,137 +325,135 @@ def calculate_inrate(
     coa_percent
 ):
 
-    # CLIENT RATE ENTERED
+    # --------------------------------------------------------
+    # WHEN CLIENT RATE IS ENTERED
+    # --------------------------------------------------------
+
     if client_rate > 0:
 
-        # Difference from insurer gross rate
-        difference = client_rate - gross_rate
+        # Difference between client rate and insurer gross rate
+        gross_difference = client_rate - gross_rate
 
-        # Remove GST from difference
-        x_amount = difference / 1.18
+        # Remove 18% GST
+        x_amount = gross_difference / 1.18
 
-        x_note = "Net additional amount"
+        x_note = "Difference after removing 18% GST"
 
-        denominator = client_rate
+        denominator_rate = client_rate
 
-    # CLIENT RATE NOT ENTERED
+
+    # --------------------------------------------------------
+    # WHEN CLIENT RATE IS NOT ENTERED
+    # --------------------------------------------------------
+
     else:
 
-        # Show insurer amount excluding GST
-        x_amount = gross_rate / 1.18
+        # Insurer gross rate excluding GST
+        net_insurer_rate = gross_rate / 1.18
 
-        x_note = "Net insurer amount"
+        # GST component of insurer gross rate
+        x_amount = gross_rate - net_insurer_rate
 
-        denominator = gross_rate
+        gross_difference = x_amount
 
+        x_note = "GST amount from insurer gross rate"
+
+        denominator_rate = gross_rate
+
+
+    # --------------------------------------------------------
     # COA AMOUNT
-    coa_amount = base_rate * (coa_percent / 100)
+    # INTERNAL BACKEND CALCULATION
+    # --------------------------------------------------------
 
-    # TOTAL IN-RATE AMOUNT
-    inrate_amount = x_amount + coa_amount
+    coa_amount = (
+        base_rate
+        * (coa_percent / 100)
+    )
 
+
+    # --------------------------------------------------------
+    # IN-RATE AMOUNT
+    # --------------------------------------------------------
+
+    inrate_amount = (
+        x_amount
+        + coa_amount
+    )
+
+
+    # --------------------------------------------------------
     # FINAL IN-RATE %
-    if denominator > 0:
-        inrate_percentage = (
-            inrate_amount / denominator
+    # --------------------------------------------------------
+
+    if denominator_rate > 0:
+
+        inrate_percent = (
+            inrate_amount
+            / denominator_rate
         ) * 100
+
     else:
-        inrate_percentage = 0.0
+
+        inrate_percent = 0.0
+
 
     return {
+        "gross_difference": gross_difference,
         "x_amount": x_amount,
         "coa_amount": coa_amount,
         "inrate_amount": inrate_amount,
-        "inrate_percentage": inrate_percentage,
+        "inrate_percent": inrate_percent,
         "x_note": x_note
     }
 
 
 # ============================================================
-# SIMPLE CSS ONLY
-# NO HTML DIV ELEMENTS
+# APP HEADER
 # ============================================================
 
-st.markdown("""
-<style>
-
-.stApp {
-    background-color: #f5f7fb;
-}
-
-.block-container {
-    max-width: 1350px;
-    padding-top: 2rem;
-    padding-bottom: 2rem;
-}
-
-h1, h2, h3 {
-    color: #172033;
-}
-
-[data-testid="stMetric"] {
-    background-color: white;
-    border: 1px solid #e5e7eb;
-    border-radius: 14px;
-    padding: 20px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
-}
-
-[data-testid="stMetricLabel"] {
-    font-weight: 700;
-}
-
-</style>
-""", unsafe_allow_html=True)
-
-
-# ============================================================
-# HEADER
-# ============================================================
-
-st.title("🛡️ Insurance In-Rate Calculator")
-
-st.caption(
-    "POLICYGRACE • INTERNAL PRICING TOOL"
+render_html(
+    '<div class="app-title">🛡️ Insurance In-Rate Calculator</div>'
+    '<div class="app-subtitle">'
+    'Analyse client pricing and calculate X Amount, COA and final In-Rate instantly.'
+    '</div>'
 )
 
-st.write(
-    "Analyse insurer pricing, client rates and internal "
-    "in-rate calculations in one place."
-)
-
-st.divider()
-
 
 # ============================================================
-# CONFIGURATION
+# STEP 01
 # ============================================================
 
-st.subheader("Select Product & Insurer")
-
-st.caption(
-    "Choose the product and insurer to load backend pricing."
+render_html(
+    '<div class="section-kicker">STEP 01</div>'
+    '<div class="section-title">Select Product & Insurer</div>'
+    '<div class="section-description">'
+    'Select the product and insurer to load the configured backend rates.'
+    '</div>'
 )
+
 
 col1, col2 = st.columns(2)
+
 
 with col1:
 
     product = st.selectbox(
         "Product",
-        options=list(RATE_MASTER.keys())
+        list(RATE_MASTER.keys())
     )
+
 
 with col2:
 
     insurer = st.selectbox(
         "Insurer",
-        options=list(RATE_MASTER[product].keys())
+        list(RATE_MASTER[product].keys())
     )
 
 
 # ============================================================
-# GET BACKEND CONFIGURATION
+# BACKEND CONFIGURATION
 # ============================================================
 
 config = RATE_MASTER[product][insurer]
@@ -315,30 +479,33 @@ variable_rate = config.get(
 
 if variable_rate:
 
-    st.warning(
-        "This product has a variable rate based on age "
-        "and loan tenure."
-    )
-
-    st.info(
-        "Please configure the required rate before calculation."
+    render_html(
+        '<div class="variable-box">'
+        '<b>Variable Rate Product</b><br>'
+        'This product is priced based on age and loan tenure. '
+        'Fixed backend rates are not configured.'
+        '</div>'
     )
 
     st.stop()
 
 
 # ============================================================
-# CLIENT PRICING
+# STEP 02
 # ============================================================
 
-st.divider()
+st.markdown("<br>", unsafe_allow_html=True)
 
-st.subheader("Enter Client Rate")
 
-st.caption(
-    "Enter the final rate to be charged to the client. "
-    "Leave ₹0 to calculate the net insurer amount."
+render_html(
+    '<div class="section-kicker">STEP 02</div>'
+    '<div class="section-title">Enter Client Rate</div>'
+    '<div class="section-description">'
+    'Enter the final rate you plan to charge the client. '
+    'Leave it as ₹0 to calculate using the insurer gross rate GST component.'
+    '</div>'
 )
+
 
 client_rate = st.number_input(
     "Client Rate (₹)",
@@ -350,7 +517,7 @@ client_rate = st.number_input(
 
 
 # ============================================================
-# CALCULATE
+# CALCULATE RESULTS
 # ============================================================
 
 result = calculate_inrate(
@@ -362,115 +529,179 @@ result = calculate_inrate(
 
 
 # ============================================================
-# RESULTS
+# STEP 03
 # ============================================================
 
-st.divider()
+st.markdown("<br>", unsafe_allow_html=True)
 
-st.subheader("Calculation Results")
 
-st.caption(
-    "Live calculation based on the selected insurer "
-    "and client rate."
+render_html(
+    '<div class="section-kicker">STEP 03</div>'
+    '<div class="section-title">Calculation Results</div>'
+    '<div class="section-description">'
+    'Your calculated in-rate result.'
+    '</div>'
 )
 
 
 # ============================================================
-# KPI CARDS
+# RESULT CARDS
 # ============================================================
 
-c1, c2, c3, c4 = st.columns(4)
+r1, r2, r3, r4 = st.columns(4)
 
 
-with c1:
+# ------------------------------------------------------------
+# INSURER GROSS RATE
+# ------------------------------------------------------------
 
-    st.metric(
-        label="INSURER GROSS RATE",
-        value=f"₹{gross_rate:,.2f}"
-    )
+with r1:
 
-    st.caption(
-        "Insurer payment including GST"
-    )
-
-
-with c2:
-
-    st.metric(
-        label="X AMOUNT",
-        value=f"₹{result['x_amount']:,.2f}"
-    )
-
-    st.caption(
-        result["x_note"]
+    render_html(
+        f'<div class="result-card gross-card">'
+        f'<div class="card-label">INSURER GROSS RATE</div>'
+        f'<div class="card-value">₹{gross_rate:,.2f}</div>'
+        f'<div class="card-note">Insurer payment including GST</div>'
+        f'</div>'
     )
 
 
-with c3:
+# ------------------------------------------------------------
+# X AMOUNT
+# ------------------------------------------------------------
 
-    st.metric(
-        label="IN-RATE AMOUNT",
-        value=f"₹{result['inrate_amount']:,.2f}"
-    )
+with r2:
 
-    st.caption(
-        "X Amount + Internal COA"
-    )
-
-
-with c4:
-
-    st.metric(
-        label="COA AMOUNT",
-        value=f"₹{result['coa_amount']:,.2f}"
-    )
-
-    st.caption(
-        "Internal calculation"
+    render_html(
+        f'<div class="result-card x-card">'
+        f'<div class="card-label">X AMOUNT</div>'
+        f'<div class="card-value">₹{result["x_amount"]:,.2f}</div>'
+        f'<div class="card-note">{result["x_note"]}</div>'
+        f'</div>'
     )
 
 
-# ============================================================
-# FINAL RESULT
-# ============================================================
+# ------------------------------------------------------------
+# IN-RATE AMOUNT
+# ------------------------------------------------------------
 
-st.divider()
+with r3:
 
-final_col1, final_col2, final_col3 = st.columns([1, 2, 1])
+    render_html(
+        f'<div class="result-card inrate-card">'
+        f'<div class="card-label">IN-RATE AMOUNT</div>'
+        f'<div class="card-value">₹{result["inrate_amount"]:,.2f}</div>'
+        f'<div class="card-note">X Amount + COA Amount</div>'
+        f'</div>'
+    )
 
-with final_col2:
 
-    st.metric(
-        label="FINAL IN-RATE PERCENTAGE",
-        value=f"{result['inrate_percentage']:.2f}%"
+# ------------------------------------------------------------
+# COA AMOUNT
+# ------------------------------------------------------------
+
+with r4:
+
+    render_html(
+        f'<div class="result-card coa-card">'
+        f'<div class="card-label">COA AMOUNT</div>'
+        f'<div class="card-value">₹{result["coa_amount"]:,.2f}</div>'
+        f'<div class="card-note">Calculated internally</div>'
+        f'</div>'
     )
 
 
 # ============================================================
-# CALCULATION STATUS
+# FINAL IN-RATE PERCENTAGE
 # ============================================================
 
-if client_rate > 0:
+render_html(
+    f'<div class="final-result">'
+    f'<div class="final-label">FINAL IN-RATE PERCENTAGE</div>'
+    f'<div class="final-value">{result["inrate_percent"]:.2f}%</div>'
+    f'</div>'
+)
 
-    st.success(
-        "Client rate entered. X Amount is calculated after "
-        "subtracting the insurer gross rate and removing GST."
-    )
 
-else:
+# ============================================================
+# CALCULATION LOGIC
+# ============================================================
 
-    st.info(
-        "No client rate entered. X Amount shows the insurer "
-        "gross rate converted to the net amount excluding GST."
-    )
+with st.expander("View Calculation Logic"):
+
+    if client_rate > 0:
+
+        st.markdown(f"""
+### Client Rate
+
+₹{client_rate:,.2f}
+
+### Insurer Gross Rate
+
+₹{gross_rate:,.2f}
+
+### X Amount
+
+(Client Rate − Insurer Gross Rate) ÷ 1.18
+
+= **₹{result["x_amount"]:,.2f}**
+
+### In-Rate Amount
+
+X Amount + COA Amount
+
+= **₹{result["inrate_amount"]:,.2f}**
+
+### Final In-Rate Percentage
+
+(In-Rate Amount ÷ Client Rate) × 100
+
+= **{result["inrate_percent"]:.2f}%**
+""")
+
+    else:
+
+        net_insurer_rate = gross_rate / 1.18
+
+        st.markdown(f"""
+### Insurer Gross Rate
+
+₹{gross_rate:,.2f}
+
+### Insurer Rate Excluding GST
+
+₹{gross_rate:,.2f} ÷ 1.18
+
+= ₹{net_insurer_rate:,.2f}
+
+### X Amount
+
+Insurer Gross Rate − Insurer Rate Excluding GST
+
+₹{gross_rate:,.2f} − ₹{net_insurer_rate:,.2f}
+
+= **₹{result["x_amount"]:,.2f}**
+
+### In-Rate Amount
+
+X Amount + COA Amount
+
+= **₹{result["inrate_amount"]:,.2f}**
+
+### Final In-Rate Percentage
+
+(In-Rate Amount ÷ Insurer Gross Rate) × 100
+
+= **{result["inrate_percent"]:.2f}%**
+""")
 
 
 # ============================================================
 # FOOTER
 # ============================================================
 
-st.divider()
-
-st.caption(
-    "POLICYGRACE INSURANCE BROKING • INTERNAL USE ONLY"
+render_html(
+    '<div class="footer">'
+    'Policygrace Internal Pricing Tool • Insurance In-Rate Calculator'
+    '</div>'
 )
