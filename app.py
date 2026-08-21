@@ -1,3 +1,4 @@
+import textwrap
 import streamlit as st
 
 # ============================================================
@@ -8,7 +9,7 @@ st.set_page_config(
     page_title="Policygrace | Insurance In-Rate Calculator",
     page_icon="🛡️",
     layout="wide",
-    initial_sidebar_state="collapsed"
+    initial_sidebar_state="collapsed",
 )
 
 
@@ -18,133 +19,103 @@ st.set_page_config(
 # ============================================================
 
 RATE_MASTER = {
-
     "PA": {
-        "Care": {
-            "base_rate": 9.00,
-            "gross_rate": 11.00,
-            "coa_percent": 8.5
-        },
+        "Care": {"base_rate": 9.00, "gross_rate": 11.00, "coa_percent": 8.5},
         "Cigna Manipal": {
             "base_rate": 24.00,
             "gross_rate": 28.00,
-            "coa_percent": 25.0
+            "coa_percent": 25.0,
         },
         "Aditya Birla": {
             "base_rate": 21.00,
             "gross_rate": 25.00,
-            "coa_percent": 25.0
-        }
-    },
-
-    "Hospicash": {
-        "ZUNO": {
-            "base_rate": 150.00,
-            "gross_rate": 177.00,
-            "coa_percent": 0.0
+            "coa_percent": 25.0,
         },
+    },
+    "Hospicash": {
+        "ZUNO": {"base_rate": 150.00, "gross_rate": 177.00, "coa_percent": 0.0},
         "Hospicash Rate 280": {
             "base_rate": 280.00,
             "gross_rate": 330.00,
-            "coa_percent": 0.0
-        }
+            "coa_percent": 0.0,
+        },
     },
-
     "PA HOSPICASH": {
         "Magma (18-60)": {
             "base_rate": 424.00,
             "gross_rate": 500.00,
-            "coa_percent": 10.0
+            "coa_percent": 10.0,
         },
-        "Tata": {
-            "base_rate": 169.00,
-            "gross_rate": 200.00,
-            "coa_percent": 25.0
-        }
+        "Tata": {"base_rate": 169.00, "gross_rate": 200.00, "coa_percent": 25.0},
     },
-
     "PA + Cancer Specific": {
         "Cigna Manipal": {
             "base_rate": 180.00,
             "gross_rate": 212.00,
-            "coa_percent": 25.0
+            "coa_percent": 25.0,
         }
     },
-
     "Cancer Specific": {
         "Cigna Manipal": {
             "base_rate": 156.00,
             "gross_rate": 184.00,
-            "coa_percent": 25.0
+            "coa_percent": 25.0,
         }
     },
-
     "GTL": {
-        "IPRU": {
-            "base_rate": 450.00,
-            "gross_rate": 531.00,
-            "coa_percent": 0.0
-        },
+        "IPRU": {"base_rate": 450.00, "gross_rate": 531.00, "coa_percent": 0.0},
         "Aviva": {
             "base_rate": 320.30,
             "gross_rate": 378.00,
-            "coa_percent": 10.0
-        }
-    },
-
-    "PA + CI": {
-        "Magma": {
-            "base_rate": 270.00,
-            "gross_rate": 319.00,
-            "coa_percent": 10.0
+            "coa_percent": 10.0,
         },
+    },
+    "PA + CI": {
+        "Magma": {"base_rate": 270.00, "gross_rate": 319.00, "coa_percent": 10.0},
         "Cigna Manipal": {
             "base_rate": 368.00,
             "gross_rate": 434.00,
-            "coa_percent": 25.0
-        }
+            "coa_percent": 25.0,
+        },
     },
-
     "GCL": {
         "Digit": {
             "base_rate": None,
             "gross_rate": None,
             "coa_percent": 32.5,
-            "variable_rate": True
+            "variable_rate": True,
         },
         "Aviva (HL & LAP)": {
             "base_rate": None,
             "gross_rate": None,
             "coa_percent": 10.0,
-            "variable_rate": True
-        }
+            "variable_rate": True,
+        },
     },
-
     "CI": {
         "Cigna Manipal": {
             "base_rate": 344.00,
             "gross_rate": 406.00,
-            "coa_percent": 25.0
+            "coa_percent": 25.0,
         }
     },
-
     "Health": {
         "Aditya Birla": {
             "base_rate": 1879.00,
             "gross_rate": 2217.00,
-            "coa_percent": 25.0
+            "coa_percent": 25.0,
         },
         "Health 18-60": {
             "base_rate": 2699.00,
             "gross_rate": 3185.00,
-            "coa_percent": 0.0
+            "coa_percent": 0.0,
         },
         "Health Rate 3369": {
             "base_rate": 3369.00,
             "gross_rate": 3975.00,
-            "coa_percent": 0.0
-        }
-    }
+            "coa_percent": 0.0,
+        },
+    },
 }
 
 
@@ -152,7 +123,8 @@ RATE_MASTER = {
 # CUSTOM CSS
 # ============================================================
 
-st.markdown("""
+st.markdown(
+    """
 <style>
 
     /* ------------------------------
@@ -434,102 +406,44 @@ st.markdown("""
     }
 
 </style>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True,
+)
 
 
 # ============================================================
-# HELPER FUNCTION
+# HELPER FUNCTION (UPDATED TO FIX HTML RENDERING)
 # ============================================================
+
 
 def render_html(html):
-    st.markdown(html, unsafe_allow_html=True)
+    st.markdown(textwrap.dedent(html), unsafe_allow_html=True)
 
 
 # ============================================================
 # CALCULATION ENGINE
 # ============================================================
 
-def calculate_inrate(
-    client_rate,
-    base_rate,
-    gross_rate,
-    coa_percent
-):
 
-    # ========================================================
-    # CLIENT RATE ENTERED
-    #
-    # X AMOUNT =
-    # (CLIENT RATE - INSURER GROSS RATE) / 1.18
-    # ========================================================
-
+def calculate_inrate(client_rate, base_rate, gross_rate, coa_percent):
     if client_rate > 0:
-
         difference = client_rate - gross_rate
-
         x_amount = difference / 1.18
-
         x_note = "Additional amount excluding 18% GST"
-
         denominator_rate = client_rate
-
-
-    # ========================================================
-    # CLIENT RATE NOT ENTERED
-    #
-    # X AMOUNT =
-    # INSURER GROSS RATE / 1.18
-    #
-    # SHOW NET AMOUNT EXCLUDING GST
-    # ========================================================
-
     else:
-
         x_amount = gross_rate / 1.18
-
         difference = gross_rate
-
         x_note = "Net insurer amount excluding 18% GST"
-
         denominator_rate = gross_rate
 
-
-    # ========================================================
-    # COA AMOUNT
-    # INTERNAL BACKEND CALCULATION
-    # ========================================================
-
-    coa_amount = (
-        base_rate *
-        (coa_percent / 100)
-    )
-
-
-    # ========================================================
-    # TOTAL IN-RATE AMOUNT
-    # ========================================================
-
-    inrate_amount = (
-        x_amount +
-        coa_amount
-    )
-
-
-    # ========================================================
-    # FINAL IN-RATE %
-    # ========================================================
+    coa_amount = base_rate * (coa_percent / 100)
+    inrate_amount = x_amount + coa_amount
 
     if denominator_rate > 0:
-
-        inrate_percent = (
-            inrate_amount /
-            denominator_rate
-        ) * 100
-
+        inrate_percent = (inrate_amount / denominator_rate) * 100
     else:
-
         inrate_percent = 0.0
-
 
     return {
         "difference": difference,
@@ -537,7 +451,7 @@ def calculate_inrate(
         "coa_amount": coa_amount,
         "inrate_amount": inrate_amount,
         "inrate_percent": inrate_percent,
-        "x_note": x_note
+        "x_note": x_note,
     }
 
 
@@ -581,22 +495,13 @@ Choose the product and insurer to load the configured backend pricing.
 input_container = st.container()
 
 with input_container:
-
     left, right = st.columns(2)
 
     with left:
-
-        product = st.selectbox(
-            "Product",
-            list(RATE_MASTER.keys())
-        )
+        product = st.selectbox("Product", list(RATE_MASTER.keys()))
 
     with right:
-
-        insurer = st.selectbox(
-            "Insurer",
-            list(RATE_MASTER[product].keys())
-        )
+        insurer = st.selectbox("Insurer", list(RATE_MASTER[product].keys()))
 
 
 # ============================================================
@@ -604,20 +509,10 @@ with input_container:
 # ============================================================
 
 config = RATE_MASTER[product][insurer]
-
 base_rate = config.get("base_rate")
-
 gross_rate = config.get("gross_rate")
-
-coa_percent = config.get(
-    "coa_percent",
-    0.0
-)
-
-variable_rate = config.get(
-    "variable_rate",
-    False
-)
+coa_percent = config.get("coa_percent", 0.0)
+variable_rate = config.get("variable_rate", False)
 
 
 # ============================================================
@@ -625,11 +520,7 @@ variable_rate = config.get(
 # ============================================================
 
 if variable_rate:
-
-    st.warning(
-        "This product has a variable rate based on age and loan tenure."
-    )
-
+    st.warning("This product has a variable rate based on age and loan tenure.")
     st.stop()
 
 
@@ -650,11 +541,7 @@ net insurer rate excluding GST.
 
 
 client_rate = st.number_input(
-    "Client Rate (₹)",
-    min_value=0.0,
-    value=0.0,
-    step=1.0,
-    format="%.2f"
+    "Client Rate (₹)", min_value=0.0, value=0.0, step=1.0, format="%.2f"
 )
 
 
@@ -666,7 +553,7 @@ result = calculate_inrate(
     client_rate=float(client_rate),
     base_rate=float(base_rate),
     gross_rate=float(gross_rate),
-    coa_percent=float(coa_percent)
+    coa_percent=float(coa_percent),
 )
 
 
@@ -691,13 +578,7 @@ Live calculation based on the selected insurer and client rate.
 
 c1, c2, c3, c4 = st.columns(4)
 
-
-# ------------------------------------------------------------
-# INSURER GROSS RATE
-# ------------------------------------------------------------
-
 with c1:
-
     render_html(f"""
     <div class="kpi-card kpi-purple">
 
@@ -716,13 +597,7 @@ with c1:
     </div>
     """)
 
-
-# ------------------------------------------------------------
-# X AMOUNT
-# ------------------------------------------------------------
-
 with c2:
-
     render_html(f"""
     <div class="kpi-card kpi-teal">
 
@@ -741,13 +616,7 @@ with c2:
     </div>
     """)
 
-
-# ------------------------------------------------------------
-# IN-RATE AMOUNT
-# ------------------------------------------------------------
-
 with c3:
-
     render_html(f"""
     <div class="kpi-card kpi-orange">
 
@@ -766,13 +635,7 @@ with c3:
     </div>
     """)
 
-
-# ------------------------------------------------------------
-# COA AMOUNT
-# ------------------------------------------------------------
-
 with c4:
-
     render_html(f"""
     <div class="kpi-card kpi-dark">
 
@@ -820,18 +683,15 @@ render_html(f"""
 # ============================================================
 
 if client_rate > 0:
-
-    render_html(f"""
+    render_html("""
     <div class="info-strip">
         ✓ Client rate has been considered. The additional amount above
         the insurer gross rate is converted to a net amount after
         removing 18% GST.
     </div>
     """)
-
 else:
-
-    render_html(f"""
+    render_html("""
     <div class="info-strip">
         ✓ No client rate entered. X Amount currently displays the
         insurer gross rate converted to the net amount excluding 18% GST.
