@@ -15,8 +15,8 @@ st.set_page_config(
 # ============================================================
 # BACKEND RATE MASTER
 #
-# Base Rate  = Insurer Base Rate
-# Gross Rate = Amount including GST / gross insurer payment
+# Base Rate  = Insurer Base Rate excluding GST
+# Gross Rate = Insurer payable amount including GST
 #
 # X Amount       = Client Rate - Gross Rate
 # COA Amount     = Base Rate × COA %
@@ -27,19 +27,16 @@ st.set_page_config(
 RATE_MASTER = {
 
     "PA": {
-
         "Care @8.5%": {
             "base_rate": 9.00,
             "gross_rate": 11.00,
             "coa_percent": 8.5
         },
-
         "Cigna Manipal @25%": {
             "base_rate": 24.00,
             "gross_rate": 28.00,
             "coa_percent": 25.0
         },
-
         "Aditya Birla @25% (incl GST)": {
             "base_rate": 21.00,
             "gross_rate": 25.00,
@@ -47,15 +44,12 @@ RATE_MASTER = {
         }
     },
 
-
     "Hospicash": {
-
         "ZUNO (Nil COA)": {
             "base_rate": 150.00,
             "gross_rate": 177.00,
             "coa_percent": 0.0
         },
-
         "Hospicash Rate 280": {
             "base_rate": 280.00,
             "gross_rate": 330.00,
@@ -63,15 +57,12 @@ RATE_MASTER = {
         }
     },
 
-
     "PA HOSPICASH": {
-
         "Magma (18-60) @10%": {
             "base_rate": 424.00,
             "gross_rate": 500.00,
             "coa_percent": 10.0
         },
-
         "Tata @25%": {
             "base_rate": 169.00,
             "gross_rate": 200.00,
@@ -79,9 +70,7 @@ RATE_MASTER = {
         }
     },
 
-
     "PA + Cancer Specific": {
-
         "Cigna Manipal @25%": {
             "base_rate": 180.00,
             "gross_rate": 212.00,
@@ -89,9 +78,7 @@ RATE_MASTER = {
         }
     },
 
-
     "Cancer Specific": {
-
         "Cigna Manipal @25%": {
             "base_rate": 156.00,
             "gross_rate": 184.00,
@@ -99,15 +86,12 @@ RATE_MASTER = {
         }
     },
 
-
     "GTL": {
-
         "IPRU": {
             "base_rate": 450.00,
             "gross_rate": 531.00,
             "coa_percent": 0.0
         },
-
         "Aviva @10%": {
             "base_rate": 320.30,
             "gross_rate": 378.00,
@@ -115,15 +99,12 @@ RATE_MASTER = {
         }
     },
 
-
     "PA + CI": {
-
         "Magma @10%": {
             "base_rate": 270.00,
             "gross_rate": 319.00,
             "coa_percent": 10.0
         },
-
         "Cigna Manipal @25%": {
             "base_rate": 368.00,
             "gross_rate": 434.00,
@@ -131,16 +112,13 @@ RATE_MASTER = {
         }
     },
 
-
     "GCL": {
-
         "Digit @32.5%": {
             "base_rate": None,
             "gross_rate": None,
             "coa_percent": 32.5,
             "variable_rate": True
         },
-
         "Aviva (HL & LAP) @10%": {
             "base_rate": None,
             "gross_rate": None,
@@ -149,9 +127,7 @@ RATE_MASTER = {
         }
     },
 
-
     "CI": {
-
         "Cigna Manipal @25%": {
             "base_rate": 344.00,
             "gross_rate": 406.00,
@@ -159,21 +135,17 @@ RATE_MASTER = {
         }
     },
 
-
     "Health": {
-
         "Aditya Birla @25%": {
             "base_rate": 1879.00,
             "gross_rate": 2217.00,
             "coa_percent": 25.0
         },
-
         "Health 18-60": {
             "base_rate": 2699.00,
             "gross_rate": 3185.00,
             "coa_percent": 0.0
         },
-
         "Health Rate 3369": {
             "base_rate": 3369.00,
             "gross_rate": 3975.00,
@@ -211,11 +183,6 @@ st.markdown("""
     padding-bottom: 2rem;
 }
 
-
-/* ============================================================
-   HEADER
-============================================================ */
-
 .app-title {
     font-size: 36px;
     font-weight: 800;
@@ -229,11 +196,6 @@ st.markdown("""
     color: #64748b;
     margin-bottom: 30px;
 }
-
-
-/* ============================================================
-   SECTION HEADINGS
-============================================================ */
 
 .section-kicker {
     font-size: 11px;
@@ -256,11 +218,6 @@ st.markdown("""
     margin-bottom: 18px;
 }
 
-
-/* ============================================================
-   INPUTS
-============================================================ */
-
 div[data-testid="stSelectbox"] > div > div {
     border-radius: 10px;
 }
@@ -274,11 +231,6 @@ div[data-testid="stNumberInput"] label {
     font-weight: 700;
     color: #334155;
 }
-
-
-/* ============================================================
-   RESULT CARDS
-============================================================ */
 
 .result-card {
     border-radius: 18px;
@@ -341,11 +293,6 @@ div[data-testid="stNumberInput"] label {
     line-height: 1.4;
 }
 
-
-/* ============================================================
-   FINAL RESULT
-============================================================ */
-
 .final-result {
     background: linear-gradient(
         135deg,
@@ -354,13 +301,9 @@ div[data-testid="stNumberInput"] label {
     );
 
     color: white;
-
     padding: 30px;
-
     border-radius: 22px;
-
     text-align: center;
-
     margin-top: 24px;
 
     box-shadow:
@@ -381,11 +324,6 @@ div[data-testid="stNumberInput"] label {
     margin-top: 8px;
 }
 
-
-/* ============================================================
-   ALERT
-============================================================ */
-
 .alert-box {
     background: #fff7ed;
     border-left: 4px solid #f97316;
@@ -395,22 +333,12 @@ div[data-testid="stNumberInput"] label {
     margin-top: 20px;
 }
 
-
-/* ============================================================
-   FOOTER
-============================================================ */
-
 .footer {
     text-align: center;
     color: #94a3b8;
     font-size: 12px;
     margin-top: 30px;
 }
-
-
-/* ============================================================
-   HIDE STREAMLIT ELEMENTS
-============================================================ */
 
 #MainMenu {
     visibility: hidden;
@@ -425,6 +353,18 @@ footer {
 
 
 # ============================================================
+# HTML RENDER FUNCTION
+# FIXES HTML SHOWING AS TEXT
+# ============================================================
+
+def render_html(html):
+    st.markdown(
+        html.strip(),
+        unsafe_allow_html=True
+    )
+
+
+# ============================================================
 # CALCULATION FUNCTION
 # ============================================================
 
@@ -435,49 +375,22 @@ def calculate_inrate(
     coa_percent
 ):
 
-    # --------------------------------------------------------
-    # X AMOUNT
-    #
-    # Client Rate - Gross Rate
-    #
-    # Gross Rate is the insurer payment including GST
-    # --------------------------------------------------------
-
+    # X Amount = Client Rate - Insurer Gross Rate
     x_amount = client_rate - gross_rate
 
-
-    # --------------------------------------------------------
-    # COA AMOUNT
-    #
-    # Base Rate × COA %
-    #
-    # COA is calculated only on insurer base rate
-    # --------------------------------------------------------
-
+    # COA Amount = Insurer Base Rate × COA %
     coa_amount = (
         base_rate
         * (coa_percent / 100)
     )
 
-
-    # --------------------------------------------------------
-    # IN-RATE AMOUNT
-    #
-    # X Amount + COA Amount
-    # --------------------------------------------------------
-
+    # In-Rate Amount = X Amount + COA Amount
     inrate_amount = (
         x_amount
         + coa_amount
     )
 
-
-    # --------------------------------------------------------
-    # FINAL IN-RATE %
-    #
-    # In-Rate Amount ÷ Client Rate × 100
-    # --------------------------------------------------------
-
+    # Final In-Rate %
     if client_rate > 0:
 
         inrate_percent = (
@@ -486,9 +399,7 @@ def calculate_inrate(
         ) * 100
 
     else:
-
         inrate_percent = 0
-
 
     return {
         "x_amount": x_amount,
@@ -502,7 +413,7 @@ def calculate_inrate(
 # APP HEADER
 # ============================================================
 
-st.markdown("""
+render_html("""
 <div class="app-title">
     🛡️ Insurance In-Rate Calculator
 </div>
@@ -510,14 +421,14 @@ st.markdown("""
 <div class="app-subtitle">
     Analyse client pricing and calculate X Amount, COA and final In-Rate instantly.
 </div>
-""", unsafe_allow_html=True)
+""")
 
 
 # ============================================================
 # STEP 01
 # ============================================================
 
-st.markdown("""
+render_html("""
 <div class="section-kicker">
     STEP 01
 </div>
@@ -529,26 +440,20 @@ st.markdown("""
 <div class="section-description">
     Backend rates are automatically selected based on the chosen product and insurer.
 </div>
-""", unsafe_allow_html=True)
+""")
 
 
 col1, col2 = st.columns(2)
 
 
-# PRODUCT
-
 with col1:
-
     product = st.selectbox(
         "Product",
         list(RATE_MASTER.keys())
     )
 
 
-# INSURER
-
 with col2:
-
     insurer = st.selectbox(
         "Insurer",
         list(RATE_MASTER[product].keys())
@@ -562,9 +467,7 @@ with col2:
 config = RATE_MASTER[product][insurer]
 
 base_rate = config.get("base_rate")
-
 gross_rate = config.get("gross_rate")
-
 coa_percent = config.get("coa_percent", 0.0)
 
 variable_rate = config.get(
@@ -574,18 +477,18 @@ variable_rate = config.get(
 
 
 # ============================================================
-# GCL VARIABLE RATE MESSAGE
+# VARIABLE RATE PRODUCTS
 # ============================================================
 
 if variable_rate:
 
-    st.markdown("""
+    render_html("""
     <div class="alert-box">
         <b>Variable Rate Product</b><br>
         This product is priced based on age and loan tenure.
         Fixed Base Rate and Gross Rate are not configured.
     </div>
-    """, unsafe_allow_html=True)
+    """)
 
     st.stop()
 
@@ -596,7 +499,7 @@ if variable_rate:
 
 st.markdown("<br>", unsafe_allow_html=True)
 
-st.markdown("""
+render_html("""
 <div class="section-kicker">
     STEP 02
 </div>
@@ -608,7 +511,7 @@ st.markdown("""
 <div class="section-description">
     Enter the final rate you plan to charge the client.
 </div>
-""", unsafe_allow_html=True)
+""")
 
 
 client_rate = st.number_input(
@@ -638,7 +541,7 @@ result = calculate_inrate(
 
 st.markdown("<br>", unsafe_allow_html=True)
 
-st.markdown("""
+render_html("""
 <div class="section-kicker">
     STEP 03
 </div>
@@ -650,38 +553,35 @@ st.markdown("""
 <div class="section-description">
     Your calculated in-rate result.
 </div>
-""", unsafe_allow_html=True)
+""")
 
 
 r1, r2, r3, r4 = st.columns(4)
 
 
 # ============================================================
-# GROSS RATE
+# INSURER GROSS RATE
 # ============================================================
 
 with r1:
 
-    st.markdown(
-        f"""
-        <div class="result-card gross-card">
+    render_html(f"""
+<div class="result-card gross-card">
 
-            <div class="card-label">
-                INSURER GROSS RATE
-            </div>
+    <div class="card-label">
+        INSURER GROSS RATE
+    </div>
 
-            <div class="card-value">
-                ₹{gross_rate:,.2f}
-            </div>
+    <div class="card-value">
+        ₹{gross_rate:,.2f}
+    </div>
 
-            <div class="card-note">
-                Insurer payment including GST
-            </div>
+    <div class="card-note">
+        Insurer payment including GST
+    </div>
 
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+</div>
+""")
 
 
 # ============================================================
@@ -690,26 +590,23 @@ with r1:
 
 with r2:
 
-    st.markdown(
-        f"""
-        <div class="result-card x-card">
+    render_html(f"""
+<div class="result-card x-card">
 
-            <div class="card-label">
-                X AMOUNT
-            </div>
+    <div class="card-label">
+        X AMOUNT
+    </div>
 
-            <div class="card-value">
-                ₹{result["x_amount"]:,.2f}
-            </div>
+    <div class="card-value">
+        ₹{result["x_amount"]:,.2f}
+    </div>
 
-            <div class="card-note">
-                Client Rate − Gross Rate
-            </div>
+    <div class="card-note">
+        Client Rate − Gross Rate
+    </div>
 
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+</div>
+""")
 
 
 # ============================================================
@@ -718,26 +615,23 @@ with r2:
 
 with r3:
 
-    st.markdown(
-        f"""
-        <div class="result-card inrate-card">
+    render_html(f"""
+<div class="result-card inrate-card">
 
-            <div class="card-label">
-                IN-RATE AMOUNT
-            </div>
+    <div class="card-label">
+        IN-RATE AMOUNT
+    </div>
 
-            <div class="card-value">
-                ₹{result["inrate_amount"]:,.2f}
-            </div>
+    <div class="card-value">
+        ₹{result["inrate_amount"]:,.2f}
+    </div>
 
-            <div class="card-note">
-                X Amount + COA Amount
-            </div>
+    <div class="card-note">
+        X Amount + COA Amount
+    </div>
 
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+</div>
+""")
 
 
 # ============================================================
@@ -746,58 +640,51 @@ with r3:
 
 with r4:
 
-    st.markdown(
-        f"""
-        <div class="result-card coa-card">
+    render_html(f"""
+<div class="result-card coa-card">
 
-            <div class="card-label">
-                COA AMOUNT
-            </div>
+    <div class="card-label">
+        COA AMOUNT
+    </div>
 
-            <div class="card-value">
-                ₹{result["coa_amount"]:,.2f}
-            </div>
+    <div class="card-value">
+        ₹{result["coa_amount"]:,.2f}
+    </div>
 
-            <div class="card-note">
-                {coa_percent:.2f}% of Base Rate
-            </div>
+    <div class="card-note">
+        {coa_percent:.2f}% of Base Rate
+    </div>
 
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+</div>
+""")
 
 
 # ============================================================
 # FINAL IN-RATE %
 # ============================================================
 
-st.markdown(
-    f"""
-    <div class="final-result">
+render_html(f"""
+<div class="final-result">
 
-        <div class="final-label">
-            FINAL IN-RATE PERCENTAGE
-        </div>
-
-        <div class="final-value">
-            {result["inrate_percent"]:.2f}%
-        </div>
-
+    <div class="final-label">
+        FINAL IN-RATE PERCENTAGE
     </div>
-    """,
-    unsafe_allow_html=True
-)
+
+    <div class="final-value">
+        {result["inrate_percent"]:.2f}%
+    </div>
+
+</div>
+""")
 
 
 # ============================================================
-# OPTIONAL CALCULATION DETAILS
+# VIEW CALCULATION
 # ============================================================
 
 with st.expander("View Calculation Logic"):
 
     st.markdown(f"""
-
 ### 1. Client Rate
 
 **₹{client_rate:,.2f}**
@@ -853,7 +740,6 @@ with st.expander("View Calculation Logic"):
 ₹{result["inrate_amount"]:,.2f} ÷ ₹{client_rate:,.2f} × 100
 
 = **{result["inrate_percent"]:.2f}%**
-
 """)
 
 
@@ -861,8 +747,8 @@ with st.expander("View Calculation Logic"):
 # FOOTER
 # ============================================================
 
-st.markdown("""
+render_html("""
 <div class="footer">
     Policygrace Internal Pricing Tool • Insurance In-Rate Calculator
 </div>
-""", unsafe_allow_html=True)
+""")
