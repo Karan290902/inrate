@@ -1,8 +1,7 @@
-```python
 import streamlit as st
 
 # ============================================================
-# PA RATE / PAYOUT / LOADING CALCULATOR
+# PAGE CONFIG
 # ============================================================
 
 st.set_page_config(
@@ -16,17 +15,13 @@ st.set_page_config(
 # ============================================================
 # BACKEND PRODUCT CONFIGURATION
 # ============================================================
-# All product pricing remains in the backend.
-# Future products and insurers can be added here.
+# Add more products and insurers here in the future.
 
 PRODUCT_CONFIG = {
     "PA": {
         "Manipal Cigna": {
-            "base_rate": 28.32,              # Amount payable to insurer
-            "risk_rate_excl_gst": 24.00,
-            "gst_percent": 18,
-            "coa_percent": 25,
-            "coa_amount": 6.00,             # Received later from insurer
+            "insurer_rate": 28.32,   # Amount payable to insurer
+            "coa_amount": 6.00,      # Received later from insurer
             "sum_assured": 100000
         }
     }
@@ -40,146 +35,125 @@ PRODUCT_CONFIG = {
 st.markdown("""
 <style>
 
-    /* Main Background */
-    .stApp {
-        background:
-            radial-gradient(circle at top left, #e0f2fe 0%, transparent 30%),
-            radial-gradient(circle at bottom right, #dbeafe 0%, transparent 30%),
-            #f8fafc;
-    }
+.stApp {
+    background:
+        radial-gradient(circle at top left, #e0f2fe 0%, transparent 30%),
+        radial-gradient(circle at bottom right, #dbeafe 0%, transparent 30%),
+        #f8fafc;
+}
 
-    .block-container {
-        max-width: 1150px;
-        padding-top: 2.5rem;
-        padding-bottom: 2rem;
-    }
+.block-container {
+    max-width: 1150px;
+    padding-top: 2.5rem;
+    padding-bottom: 2rem;
+}
 
-    /* Header */
-    .hero {
-        background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 55%, #2563eb 100%);
-        padding: 32px 38px;
-        border-radius: 24px;
-        color: white;
-        margin-bottom: 28px;
-        box-shadow: 0 16px 40px rgba(30, 58, 138, 0.20);
-    }
+/* HERO */
+.hero {
+    background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 55%, #2563eb 100%);
+    padding: 32px 38px;
+    border-radius: 24px;
+    color: white;
+    margin-bottom: 28px;
+    box-shadow: 0 16px 40px rgba(30, 58, 138, 0.20);
+}
 
-    .hero-title {
-        font-size: 38px;
-        font-weight: 800;
-        letter-spacing: -1px;
-        margin-bottom: 6px;
-    }
+.hero-title {
+    font-size: 38px;
+    font-weight: 800;
+    margin-bottom: 6px;
+}
 
-    .hero-subtitle {
-        font-size: 16px;
-        opacity: 0.80;
-    }
+.hero-subtitle {
+    font-size: 16px;
+    opacity: 0.82;
+}
 
-    /* Section Card */
-    .input-card {
-        background: white;
-        padding: 25px;
-        border-radius: 20px;
-        box-shadow: 0 8px 30px rgba(15, 23, 42, 0.07);
-        border: 1px solid #e2e8f0;
-        margin-bottom: 24px;
-    }
+/* INPUT CARD */
+.input-card {
+    background: white;
+    padding: 25px;
+    border-radius: 20px;
+    box-shadow: 0 8px 30px rgba(15, 23, 42, 0.07);
+    border: 1px solid #e2e8f0;
+    margin-bottom: 24px;
+}
 
-    .section-heading {
-        font-size: 20px;
-        font-weight: 750;
-        color: #0f172a;
-        margin-bottom: 18px;
-    }
+.section-heading {
+    font-size: 20px;
+    font-weight: 750;
+    color: #0f172a;
+    margin-bottom: 18px;
+}
 
-    /* Result Cards */
-    .result-card {
-        padding: 28px;
-        border-radius: 22px;
-        min-height: 190px;
-        color: white;
-        box-shadow: 0 14px 30px rgba(15, 23, 42, 0.12);
-    }
+/* RESULT CARDS */
+.result-card {
+    padding: 28px;
+    border-radius: 22px;
+    min-height: 190px;
+    color: white;
+    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.12);
+}
 
-    .loading-card {
-        background: linear-gradient(135deg, #7c2d12, #ea580c);
-    }
+.loading-card {
+    background: linear-gradient(135deg, #7c2d12, #ea580c);
+}
 
-    .rate-card {
-        background: linear-gradient(135deg, #312e81, #6366f1);
-    }
+.rate-card {
+    background: linear-gradient(135deg, #312e81, #6366f1);
+}
 
-    .payout-card {
-        background: linear-gradient(135deg, #065f46, #10b981);
-    }
+.payout-card {
+    background: linear-gradient(135deg, #065f46, #10b981);
+}
 
-    .retention-card {
-        background: linear-gradient(135deg, #0f172a, #334155);
-    }
+.retention-card {
+    background: linear-gradient(135deg, #0f172a, #334155);
+}
 
-    .card-label {
-        font-size: 14px;
-        font-weight: 700;
-        letter-spacing: 0.8px;
-        opacity: 0.82;
-        margin-bottom: 14px;
-    }
+.card-label {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    opacity: 0.82;
+    margin-bottom: 14px;
+}
 
-    .card-value {
-        font-size: 38px;
-        font-weight: 850;
-        letter-spacing: -1px;
-    }
+.card-value {
+    font-size: 38px;
+    font-weight: 850;
+}
 
-    .card-note {
-        font-size: 13px;
-        margin-top: 12px;
-        opacity: 0.75;
-        line-height: 1.4;
-    }
+.card-note {
+    font-size: 13px;
+    margin-top: 12px;
+    opacity: 0.78;
+    line-height: 1.4;
+}
 
-    /* Flow Card */
-    .flow-card {
-        background: white;
-        padding: 26px;
-        border-radius: 20px;
-        border: 1px solid #e2e8f0;
-        box-shadow: 0 8px 25px rgba(15, 23, 42, 0.06);
-        margin-top: 24px;
-    }
+/* FLOW CARD */
+.flow-card {
+    background: white;
+    padding: 25px;
+    border-radius: 20px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 8px 25px rgba(15, 23, 42, 0.06);
+    margin-top: 24px;
+}
 
-    .flow-title {
-        font-size: 19px;
-        font-weight: 750;
-        color: #0f172a;
-        margin-bottom: 18px;
-    }
+/* INPUT STYLING */
+div[data-testid="stSelectbox"] > div > div,
+div[data-testid="stNumberInput"] input {
+    border-radius: 10px;
+}
 
-    .formula-box {
-        background: #f8fafc;
-        border-left: 4px solid #2563eb;
-        padding: 16px;
-        border-radius: 10px;
-        color: #334155;
-        font-size: 14px;
-        margin-top: 12px;
-    }
+#MainMenu {
+    visibility: hidden;
+}
 
-    /* Input styling */
-    div[data-testid="stSelectbox"] > div > div,
-    div[data-testid="stNumberInput"] input {
-        border-radius: 10px;
-    }
-
-    /* Hide Streamlit Branding */
-    #MainMenu {
-        visibility: hidden;
-    }
-
-    footer {
-        visibility: hidden;
-    }
+footer {
+    visibility: hidden;
+}
 
 </style>
 """, unsafe_allow_html=True)
@@ -193,18 +167,23 @@ st.markdown("""
 <div class="hero">
     <div class="hero-title">🛡️ Insurance Payout Calculator</div>
     <div class="hero-subtitle">
-        Calculate the required loading while safeguarding insurer payment and your COA retention.
+        Calculate the required loading to provide the requested payout
+        while safeguarding the insurer payment and your COA.
     </div>
 </div>
 """, unsafe_allow_html=True)
 
 
 # ============================================================
-# PRODUCT SELECTION
+# PRODUCT & INSURER
 # ============================================================
 
 st.markdown('<div class="input-card">', unsafe_allow_html=True)
-st.markdown('<div class="section-heading">📋 Product Configuration</div>', unsafe_allow_html=True)
+
+st.markdown(
+    '<div class="section-heading">📋 Product Configuration</div>',
+    unsafe_allow_html=True
+)
 
 col1, col2 = st.columns(2)
 
@@ -224,25 +203,29 @@ st.markdown('</div>', unsafe_allow_html=True)
 
 
 # ============================================================
-# FETCH BACKEND CONFIG
+# BACKEND VALUES
 # ============================================================
 
 config = PRODUCT_CONFIG[product][insurer]
 
-BASE_RATE = config["base_rate"]
+INSURER_RATE = config["insurer_rate"]
 COA_AMOUNT = config["coa_amount"]
 SUM_ASSURED = config["sum_assured"]
 
 
 # ============================================================
-# USER INPUT
+# PAYOUT INPUT
 # ============================================================
 
 st.markdown('<div class="input-card">', unsafe_allow_html=True)
-st.markdown('<div class="section-heading">🎯 Payout Requirement</div>', unsafe_allow_html=True)
+
+st.markdown(
+    '<div class="section-heading">🎯 Client Payout Requirement</div>',
+    unsafe_allow_html=True
+)
 
 payout_percent = st.number_input(
-    "Required Payout Percentage (%)",
+    "Requested Payout (%)",
     min_value=0.0,
     max_value=95.0,
     value=20.0,
@@ -251,8 +234,8 @@ payout_percent = st.number_input(
 )
 
 st.caption(
-    "The calculator automatically calculates the loading required. "
-    "Insurer payment and your COA retention remain safeguarded."
+    "The required loading is automatically calculated. "
+    "Insurer payment and COA are kept protected."
 )
 
 st.markdown('</div>', unsafe_allow_html=True)
@@ -264,46 +247,34 @@ st.markdown('</div>', unsafe_allow_html=True)
 
 payout_decimal = payout_percent / 100
 
-# Prevent division by zero
-if payout_decimal < 1:
+# Formula:
+# Final Client Rate = Insurer Rate / (1 - Payout %)
 
-    # Final rate required to provide requested payout
-    # Formula:
-    # Final Rate = Base Insurer Rate / (1 - Payout %)
-    final_client_rate = BASE_RATE / (1 - payout_decimal)
+final_client_rate = INSURER_RATE / (1 - payout_decimal)
 
-    # Additional amount to be loaded
-    required_loading = final_client_rate - BASE_RATE
+# Additional loading required above insurer rate
+required_loading = final_client_rate - INSURER_RATE
 
-    # Amount paid as payout
-    payout_amount = final_client_rate * payout_decimal
+# Payout amount
+payout_amount = final_client_rate * payout_decimal
 
-    # Insurer payment remains fully protected
-    insurer_payment = BASE_RATE
+# Insurer payment remains fixed
+insurer_payment = INSURER_RATE
 
-    # COA is received separately/later from insurer
-    retention_amount = COA_AMOUNT
-
-else:
-    final_client_rate = 0
-    required_loading = 0
-    payout_amount = 0
-    insurer_payment = 0
-    retention_amount = 0
+# COA received later from insurer
+retention_amount = COA_AMOUNT
 
 
 # ============================================================
-# RESULT HEADER
+# RESULTS
 # ============================================================
 
-st.markdown("### 📊 Calculation Results")
-
-# ============================================================
-# TOP RESULT CARDS
-# ============================================================
+st.markdown("## 📊 Calculation Results")
 
 r1, r2, r3, r4 = st.columns(4)
 
+
+# REQUIRED LOADING
 with r1:
     st.markdown(
         f"""
@@ -311,7 +282,7 @@ with r1:
             <div class="card-label">REQUIRED LOADING</div>
             <div class="card-value">₹{required_loading:.2f}</div>
             <div class="card-note">
-                Additional rate required per ₹1 lakh SA
+                Additional rate required per ₹1 Lakh SA
             </div>
         </div>
         """,
@@ -319,6 +290,7 @@ with r1:
     )
 
 
+# FINAL CLIENT RATE
 with r2:
     st.markdown(
         f"""
@@ -326,7 +298,7 @@ with r2:
             <div class="card-label">FINAL CLIENT RATE</div>
             <div class="card-value">₹{final_client_rate:.2f}</div>
             <div class="card-note">
-                Base rate + calculated loading
+                Total rate charged to the client
             </div>
         </div>
         """,
@@ -334,6 +306,7 @@ with r2:
     )
 
 
+# PAYOUT
 with r3:
     st.markdown(
         f"""
@@ -341,7 +314,7 @@ with r3:
             <div class="card-label">PAYOUT AMOUNT</div>
             <div class="card-value">₹{payout_amount:.2f}</div>
             <div class="card-note">
-                {payout_percent:.2f}% of final client rate
+                {payout_percent:.2f}% payout per ₹1 Lakh SA
             </div>
         </div>
         """,
@@ -349,6 +322,7 @@ with r3:
     )
 
 
+# RETENTION
 with r4:
     st.markdown(
         f"""
@@ -356,7 +330,7 @@ with r4:
             <div class="card-label">AMOUNT RETAINED BY US</div>
             <div class="card-value">₹{retention_amount:.2f}</div>
             <div class="card-note">
-                COA received separately from insurer
+                COA received later from the insurer
             </div>
         </div>
         """,
@@ -368,11 +342,9 @@ with r4:
 # PAYMENT FLOW
 # ============================================================
 
-st.markdown("""
-<div class="flow-card">
-    <div class="flow-title">🔄 Premium & Payment Flow</div>
-</div>
-""", unsafe_allow_html=True)
+st.markdown('<div class="flow-card">', unsafe_allow_html=True)
+
+st.markdown("### 🔄 Payment Flow")
 
 f1, f2, f3, f4 = st.columns(4)
 
@@ -386,7 +358,7 @@ with f2:
     st.metric(
         "Payout Given",
         f"₹{payout_amount:.2f}",
-        f"{payout_percent:.2f}%"
+        f"{payout_percent:.0f}%"
     )
 
 with f3:
@@ -397,44 +369,39 @@ with f3:
 
 with f4:
     st.metric(
-        "COA Retained by Us",
+        "COA Received Later",
         f"₹{retention_amount:.2f}"
     )
+
+st.markdown('</div>', unsafe_allow_html=True)
 
 
 # ============================================================
 # VALIDATION
 # ============================================================
 
-difference = final_client_rate - payout_amount - insurer_payment
+balance_check = final_client_rate - payout_amount - insurer_payment
 
-if abs(difference) < 0.01:
+if abs(balance_check) < 0.01:
     st.success(
-        "✓ Calculation is balanced. Insurer payment is fully safeguarded, "
-        "and the COA remains separately retained by us."
+        "✓ Calculation balanced successfully. "
+        "The full insurer payment is safeguarded, and your COA remains intact."
     )
 else:
-    st.warning(
-        "Please review the calculation."
-    )
+    st.warning("Please review the calculation.")
 
 
 # ============================================================
-# OPTIONAL BACKEND DETAILS
+# BACKEND DETAILS
 # ============================================================
 
-with st.expander("🔒 Backend Product Details"):
+with st.expander("🔒 Backend Details"):
 
     st.write(f"**Product:** {product}")
     st.write(f"**Insurer:** {insurer}")
     st.write(f"**Sum Assured:** ₹{SUM_ASSURED:,.0f}")
-    st.write(f"**Base Rate Payable to Insurer:** ₹{BASE_RATE:.2f}")
+    st.write(f"**Amount Payable to Insurer:** ₹{INSURER_RATE:.2f}")
     st.write(f"**COA Received Later:** ₹{COA_AMOUNT:.2f}")
-
-    st.info(
-        "Backend rates can be expanded later by adding more products "
-        "and insurers to PRODUCT_CONFIG."
-    )
 
 
 # ============================================================
@@ -444,6 +411,5 @@ with st.expander("🔒 Backend Product Details"):
 st.markdown("---")
 
 st.caption(
-    "Trial Version • PA | Manipal Cigna • All calculations shown per ₹1 Lakh Sum Assured"
+    "Trial Version • PA | Manipal Cigna • Calculations per ₹1 Lakh Sum Assured"
 )
-```
