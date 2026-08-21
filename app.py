@@ -34,249 +34,339 @@ PRODUCT_CONFIG = {
 st.markdown("""
 <style>
 
-    /* --------------------------------------------------------
-       GLOBAL
-    --------------------------------------------------------- */
+/* =========================================================
+   GLOBAL
+========================================================= */
 
-    .stApp {
-        background:
-            radial-gradient(circle at 10% 0%, rgba(37, 99, 235, 0.12), transparent 30%),
-            radial-gradient(circle at 90% 90%, rgba(16, 185, 129, 0.10), transparent 30%),
-            #f8fafc;
-    }
+.stApp {
+    background:
+        radial-gradient(
+            circle at 10% 0%,
+            rgba(37, 99, 235, 0.12),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 90% 90%,
+            rgba(16, 185, 129, 0.10),
+            transparent 30%
+        ),
+        #f8fafc;
+}
 
-    .block-container {
-        max-width: 1250px;
-        padding-top: 2.2rem;
-        padding-bottom: 3rem;
-    }
-
-    /* --------------------------------------------------------
-       HERO HEADER
-    --------------------------------------------------------- */
-
-    .hero {
-        background: linear-gradient(
-            135deg,
-            #0b1220 0%,
-            #172554 45%,
-            #1d4ed8 100%
-        );
-
-        padding: 38px 42px;
-        border-radius: 28px;
-        color: white;
-        margin-bottom: 30px;
-
-        box-shadow:
-            0 20px 45px rgba(30, 58, 138, 0.25);
-    }
-
-    .hero-badge {
-        display: inline-block;
-        background: rgba(255,255,255,0.12);
-        border: 1px solid rgba(255,255,255,0.18);
-        padding: 7px 14px;
-        border-radius: 30px;
-        font-size: 12px;
-        font-weight: 700;
-        letter-spacing: 0.8px;
-        margin-bottom: 14px;
-    }
-
-    .hero-title {
-        font-size: 42px;
-        font-weight: 850;
-        letter-spacing: -1.2px;
-        margin-bottom: 10px;
-    }
-
-    .hero-subtitle {
-        font-size: 17px;
-        opacity: 0.82;
-        max-width: 750px;
-        line-height: 1.6;
-    }
+.block-container {
+    max-width: 1250px;
+    padding-top: 2.2rem;
+    padding-bottom: 3rem;
+}
 
 
-    /* --------------------------------------------------------
-       SECTION HEADINGS
-    --------------------------------------------------------- */
+/* =========================================================
+   HERO SECTION
+========================================================= */
 
-    .section-kicker {
-        font-size: 12px;
-        font-weight: 800;
-        letter-spacing: 1.2px;
-        color: #2563eb;
-        margin-bottom: 5px;
-    }
+.hero {
+    background: linear-gradient(
+        135deg,
+        #0b1220 0%,
+        #172554 45%,
+        #1d4ed8 100%
+    );
 
-    .section-title {
-        font-size: 27px;
-        font-weight: 800;
-        color: #0f172a;
-        margin-bottom: 5px;
-    }
+    padding: 42px 45px;
+    border-radius: 28px;
+    color: white;
+    margin-bottom: 35px;
 
-    .section-description {
-        color: #64748b;
-        font-size: 15px;
-        margin-bottom: 18px;
-    }
+    box-shadow:
+        0 20px 50px rgba(30, 58, 138, 0.25);
+}
 
+.hero-badge {
+    display: inline-block;
 
-    /* --------------------------------------------------------
-       INPUT CARDS
-    --------------------------------------------------------- */
+    background: rgba(255, 255, 255, 0.12);
 
-    .input-card {
-        background: rgba(255,255,255,0.95);
-        padding: 28px;
-        border-radius: 22px;
+    border: 1px solid rgba(255, 255, 255, 0.20);
 
-        border: 1px solid #e2e8f0;
+    padding: 8px 15px;
 
-        box-shadow:
-            0 10px 30px rgba(15, 23, 42, 0.06);
+    border-radius: 30px;
 
-        margin-bottom: 28px;
-    }
+    font-size: 12px;
+    font-weight: 800;
 
+    letter-spacing: 1px;
 
-    /* --------------------------------------------------------
-       RESULT CARDS
-    --------------------------------------------------------- */
+    margin-bottom: 16px;
+}
 
-    .result-card {
-        border-radius: 22px;
-        padding: 26px;
-        min-height: 200px;
-        color: white;
+.hero-title {
+    font-size: 44px;
+    font-weight: 850;
 
-        box-shadow:
-            0 16px 35px rgba(15, 23, 42, 0.14);
+    letter-spacing: -1.2px;
 
-        position: relative;
-        overflow: hidden;
-    }
+    margin-bottom: 12px;
+}
 
-    .result-card::after {
-        content: "";
-        position: absolute;
-        width: 130px;
-        height: 130px;
-        border-radius: 50%;
-        background: rgba(255,255,255,0.08);
-        right: -40px;
-        top: -40px;
-    }
+.hero-subtitle {
+    font-size: 17px;
+
+    opacity: 0.85;
+
+    max-width: 780px;
+
+    line-height: 1.65;
+}
 
 
-    .client-card {
-        background: linear-gradient(135deg, #4338ca, #6366f1);
-    }
+/* =========================================================
+   SECTION HEADINGS
+========================================================= */
 
-    .payout-card {
-        background: linear-gradient(135deg, #047857, #10b981);
-    }
+.section-kicker {
+    font-size: 12px;
 
-    .extra-retention-card {
-        background: linear-gradient(135deg, #c2410c, #f97316);
-    }
+    font-weight: 800;
 
-    .total-retention-card {
-        background: linear-gradient(135deg, #111827, #334155);
-    }
+    letter-spacing: 1.3px;
 
+    color: #2563eb;
 
-    .card-icon {
-        font-size: 26px;
-        margin-bottom: 14px;
-    }
+    margin-bottom: 6px;
+}
 
-    .card-label {
-        font-size: 12px;
-        font-weight: 800;
-        letter-spacing: 1px;
-        opacity: 0.82;
-        margin-bottom: 12px;
-    }
+.section-title {
+    font-size: 28px;
 
-    .card-value {
-        font-size: 38px;
-        font-weight: 850;
-        letter-spacing: -1px;
-        line-height: 1;
-    }
+    font-weight: 800;
 
-    .card-note {
-        font-size: 13px;
-        margin-top: 16px;
-        opacity: 0.78;
-        line-height: 1.5;
-    }
+    color: #0f172a;
+
+    margin-bottom: 6px;
+}
+
+.section-description {
+    font-size: 15px;
+
+    color: #64748b;
+
+    margin-bottom: 20px;
+}
 
 
-    /* --------------------------------------------------------
-       PAYMENT FLOW
-    --------------------------------------------------------- */
+/* =========================================================
+   INPUT CARDS
+========================================================= */
 
-    .flow-card {
-        background: white;
-        padding: 28px;
-        border-radius: 22px;
-        border: 1px solid #e2e8f0;
+.input-card {
+    background: rgba(255, 255, 255, 0.97);
 
-        box-shadow:
-            0 10px 30px rgba(15, 23, 42, 0.06);
+    padding: 30px;
 
-        margin-top: 25px;
-    }
+    border-radius: 22px;
 
+    border: 1px solid #e2e8f0;
 
-    /* --------------------------------------------------------
-       CALCULATION SUMMARY
-    --------------------------------------------------------- */
+    box-shadow:
+        0 10px 30px rgba(15, 23, 42, 0.06);
 
-    .summary-card {
-        background: white;
-        padding: 25px;
-        border-radius: 20px;
-        border: 1px solid #e2e8f0;
-    }
+    margin-bottom: 32px;
+}
 
 
-    /* --------------------------------------------------------
-       INPUT IMPROVEMENTS
-    --------------------------------------------------------- */
+/* =========================================================
+   RESULT CARDS
+========================================================= */
 
-    div[data-testid="stSelectbox"] > div > div {
-        border-radius: 12px;
-    }
+.result-card {
+    border-radius: 22px;
 
-    div[data-testid="stNumberInput"] input {
-        border-radius: 12px;
-        font-size: 16px;
-    }
+    padding: 27px;
 
-    div[data-testid="stNumberInput"] label,
-    div[data-testid="stSelectbox"] label {
-        font-weight: 700;
-        color: #334155;
-    }
+    min-height: 210px;
+
+    color: white;
+
+    box-shadow:
+        0 16px 35px rgba(15, 23, 42, 0.14);
+
+    position: relative;
+
+    overflow: hidden;
+}
 
 
-    /* --------------------------------------------------------
-       HIDE STREAMLIT BRANDING
-    --------------------------------------------------------- */
+/* Decorative Circle */
 
-    #MainMenu {
-        visibility: hidden;
-    }
+.result-card::after {
 
-    footer {
-        visibility: hidden;
-    }
+    content: "";
+
+    position: absolute;
+
+    width: 140px;
+    height: 140px;
+
+    border-radius: 50%;
+
+    background: rgba(255, 255, 255, 0.08);
+
+    right: -45px;
+    top: -45px;
+}
+
+
+/* Card Colours */
+
+.client-card {
+    background: linear-gradient(
+        135deg,
+        #4338ca,
+        #6366f1
+    );
+}
+
+.payout-card {
+    background: linear-gradient(
+        135deg,
+        #047857,
+        #10b981
+    );
+}
+
+.extra-retention-card {
+    background: linear-gradient(
+        135deg,
+        #c2410c,
+        #f97316
+    );
+}
+
+.total-retention-card {
+    background: linear-gradient(
+        135deg,
+        #111827,
+        #334155
+    );
+}
+
+
+/* Card Text */
+
+.card-icon {
+    font-size: 28px;
+
+    margin-bottom: 15px;
+}
+
+.card-label {
+    font-size: 12px;
+
+    font-weight: 800;
+
+    letter-spacing: 1px;
+
+    opacity: 0.82;
+
+    margin-bottom: 13px;
+}
+
+.card-value {
+    font-size: 39px;
+
+    font-weight: 850;
+
+    letter-spacing: -1px;
+
+    line-height: 1;
+}
+
+.card-note {
+    font-size: 13px;
+
+    margin-top: 17px;
+
+    opacity: 0.80;
+
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   PAYMENT FLOW
+========================================================= */
+
+.flow-card {
+
+    background: white;
+
+    padding: 30px;
+
+    border-radius: 22px;
+
+    border: 1px solid #e2e8f0;
+
+    box-shadow:
+        0 10px 30px rgba(15, 23, 42, 0.06);
+}
+
+
+/* =========================================================
+   SUMMARY CARDS
+========================================================= */
+
+.summary-card {
+
+    background: white;
+
+    padding: 28px;
+
+    border-radius: 20px;
+
+    border: 1px solid #e2e8f0;
+
+    min-height: 220px;
+
+    box-shadow:
+        0 8px 25px rgba(15, 23, 42, 0.05);
+}
+
+
+/* =========================================================
+   INPUT STYLING
+========================================================= */
+
+div[data-testid="stSelectbox"] > div > div {
+    border-radius: 12px;
+}
+
+div[data-testid="stNumberInput"] input {
+    border-radius: 12px;
+
+    font-size: 16px;
+}
+
+div[data-testid="stNumberInput"] label,
+div[data-testid="stSelectbox"] label {
+
+    font-weight: 700;
+
+    color: #334155;
+}
+
+
+/* =========================================================
+   HIDE STREAMLIT BRANDING
+========================================================= */
+
+#MainMenu {
+    visibility: hidden;
+}
+
+footer {
+    visibility: hidden;
+}
 
 </style>
 """, unsafe_allow_html=True)
@@ -290,17 +380,17 @@ st.markdown("""
 <div class="hero">
 
     <div class="hero-badge">
-        POLICYGRACE • INTERNAL CALCULATOR
+        POLICYGRACE • INTERNAL PRICING TOOL
     </div>
 
     <div class="hero-title">
-        🛡️ Insurance Rate & Retention Calculator
+        Insurance Rate & Retention Calculator
     </div>
 
     <div class="hero-subtitle">
-        Calculate payout, insurer payment and total retention instantly.
-        Safeguard the insurer premium while analysing additional retention
-        generated through client pricing.
+        Calculate client pricing, payout and retention instantly.
+        Ensure insurer payments are safeguarded while identifying
+        additional retention generated from every quote.
     </div>
 
 </div>
@@ -308,34 +398,51 @@ st.markdown("""
 
 
 # ============================================================
-# PRODUCT & INSURER SECTION
+# STEP 01 - PRODUCT & INSURER
 # ============================================================
 
 st.markdown("""
 <div class="section-kicker">STEP 01</div>
-<div class="section-title">Select Product & Insurer</div>
+
+<div class="section-title">
+    Select Product & Insurer
+</div>
+
 <div class="section-description">
-Choose the product configuration for which you want to calculate payout and retention.
+    Choose the product and insurer for which you want to calculate
+    pricing, payout and retention.
 </div>
 """, unsafe_allow_html=True)
 
-st.markdown('<div class="input-card">', unsafe_allow_html=True)
+
+st.markdown(
+    '<div class="input-card">',
+    unsafe_allow_html=True
+)
 
 col1, col2 = st.columns(2)
 
+
 with col1:
+
     product = st.selectbox(
-        "🛡️ Product",
+        "🛡️ Select Product",
         options=list(PRODUCT_CONFIG.keys())
     )
 
+
 with col2:
+
     insurer = st.selectbox(
-        "🏢 Insurer",
+        "🏢 Select Insurer",
         options=list(PRODUCT_CONFIG[product].keys())
     )
 
-st.markdown('</div>', unsafe_allow_html=True)
+
+st.markdown(
+    '</div>',
+    unsafe_allow_html=True
+)
 
 
 # ============================================================
@@ -345,52 +452,68 @@ st.markdown('</div>', unsafe_allow_html=True)
 config = PRODUCT_CONFIG[product][insurer]
 
 INSURER_PAYMENT = config["insurer_payment"]
+
 COA_AMOUNT = config["coa_amount"]
+
 SUM_ASSURED = config["sum_assured"]
 
 
 # ============================================================
-# PRICING & PAYOUT INPUT SECTION
+# STEP 02 - CLIENT PRICING & PAYOUT
 # ============================================================
 
 st.markdown("""
 <div class="section-kicker">STEP 02</div>
-<div class="section-title">Enter Client Pricing & Payout</div>
+
+<div class="section-title">
+    Enter Client Pricing & Payout
+</div>
+
 <div class="section-description">
-Enter the final price you are willing to charge the client and the payout percentage to be given.
+    Enter the final rate you are willing to charge the client and
+    the payout percentage you wish to provide.
 </div>
 """, unsafe_allow_html=True)
 
-st.markdown('<div class="input-card">', unsafe_allow_html=True)
+
+st.markdown(
+    '<div class="input-card">',
+    unsafe_allow_html=True
+)
+
 
 input1, input2 = st.columns(2)
 
+
 with input1:
 
-    st.markdown("#### 💰 Client Rate")
+    st.markdown("#### 💰 Client Pricing")
 
     client_rate = st.number_input(
         "Final Rate Charged to Client (₹ per ₹1 Lakh SA)",
         min_value=0.0,
         value=35.40,
-        step=0.50,
-        help="Enter the final premium/rate you plan to charge."
+        step=0.50
     )
+
 
 with input2:
 
-    st.markdown("#### 🤝 Payout")
+    st.markdown("#### 🤝 Payout Requirement")
 
     payout_percent = st.number_input(
         "Payout Percentage (%)",
         min_value=0.0,
         max_value=100.0,
         value=20.0,
-        step=1.0,
-        help="Enter the percentage you want to provide as payout."
+        step=1.0
     )
 
-st.markdown('</div>', unsafe_allow_html=True)
+
+st.markdown(
+    '</div>',
+    unsafe_allow_html=True
+)
 
 
 # ============================================================
@@ -399,29 +522,46 @@ st.markdown('</div>', unsafe_allow_html=True)
 
 payout_decimal = payout_percent / 100
 
-# Payout amount
-payout_amount = client_rate * payout_decimal
 
-# Amount retained from current client premium
+# Payout Amount
+
+payout_amount = (
+    client_rate
+    * payout_decimal
+)
+
+
+# Extra Retention
+
 extra_retention = (
     client_rate
     - payout_amount
     - INSURER_PAYMENT
 )
 
-# Total retention includes extra retention + COA received later
-total_retention = extra_retention + COA_AMOUNT
+
+# Total Retention
+
+total_retention = (
+    extra_retention
+    + COA_AMOUNT
+)
 
 
 # ============================================================
-# RESULTS SECTION
+# STEP 03 - RESULTS
 # ============================================================
 
 st.markdown("""
 <div class="section-kicker">STEP 03</div>
-<div class="section-title">Calculation Results</div>
+
+<div class="section-title">
+    Calculation Results
+</div>
+
 <div class="section-description">
-A complete view of client pricing, payout and your retention.
+    Review the financial outcome based on the selected client rate
+    and payout percentage.
 </div>
 """, unsafe_allow_html=True)
 
@@ -429,14 +569,19 @@ A complete view of client pricing, payout and your retention.
 r1, r2, r3, r4 = st.columns(4)
 
 
-# CLIENT RATE CARD
+# ------------------------------------------------------------
+# CLIENT RATE
+# ------------------------------------------------------------
+
 with r1:
 
     st.markdown(
         f"""
         <div class="result-card client-card">
 
-            <div class="card-icon">💰</div>
+            <div class="card-icon">
+                💰
+            </div>
 
             <div class="card-label">
                 CLIENT RATE
@@ -456,14 +601,19 @@ with r1:
     )
 
 
-# PAYOUT CARD
+# ------------------------------------------------------------
+# PAYOUT AMOUNT
+# ------------------------------------------------------------
+
 with r2:
 
     st.markdown(
         f"""
         <div class="result-card payout-card">
 
-            <div class="card-icon">🤝</div>
+            <div class="card-icon">
+                🤝
+            </div>
 
             <div class="card-label">
                 PAYOUT AMOUNT
@@ -483,14 +633,19 @@ with r2:
     )
 
 
-# EXTRA RETENTION CARD
+# ------------------------------------------------------------
+# EXTRA RETENTION
+# ------------------------------------------------------------
+
 with r3:
 
     st.markdown(
         f"""
         <div class="result-card extra-retention-card">
 
-            <div class="card-icon">📈</div>
+            <div class="card-icon">
+                📈
+            </div>
 
             <div class="card-label">
                 EXTRA RETENTION
@@ -501,7 +656,7 @@ with r3:
             </div>
 
             <div class="card-note">
-                Retention generated above insurer payment
+                Amount retained after payout and insurer payment
             </div>
 
         </div>
@@ -510,14 +665,19 @@ with r3:
     )
 
 
-# TOTAL RETENTION CARD
+# ------------------------------------------------------------
+# TOTAL RETENTION
+# ------------------------------------------------------------
+
 with r4:
 
     st.markdown(
         f"""
         <div class="result-card total-retention-card">
 
-            <div class="card-icon">🏆</div>
+            <div class="card-icon">
+                🏆
+            </div>
 
             <div class="card-label">
                 TOTAL RETENTION
@@ -538,62 +698,99 @@ with r4:
 
 
 # ============================================================
-# PAYMENT FLOW
+# STEP 04 - PAYMENT FLOW
 # ============================================================
 
 st.markdown("""
-<div class="section-kicker" style="margin-top:35px;">STEP 04</div>
-<div class="section-title">Premium & Payment Flow</div>
+<div style="margin-top:40px;">
+
+<div class="section-kicker">
+    STEP 04
+</div>
+
+<div class="section-title">
+    Premium & Payment Flow
+</div>
+
 <div class="section-description">
-Understand exactly how the premium is distributed.
+    Understand exactly how the client premium is distributed.
+</div>
+
 </div>
 """, unsafe_allow_html=True)
 
-st.markdown('<div class="flow-card">', unsafe_allow_html=True)
+
+st.markdown(
+    '<div class="flow-card">',
+    unsafe_allow_html=True
+)
+
 
 f1, f2, f3, f4, f5 = st.columns(5)
 
+
 with f1:
+
     st.metric(
         "💳 Client Pays",
         f"₹{client_rate:.2f}"
     )
 
+
 with f2:
+
     st.metric(
         "🤝 Payout",
         f"₹{payout_amount:.2f}",
         f"{payout_percent:.0f}%"
     )
 
+
 with f3:
+
     st.metric(
         "🏢 Insurer Payment",
         f"₹{INSURER_PAYMENT:.2f}"
     )
 
+
 with f4:
+
     st.metric(
         "📈 Extra Retention",
         f"₹{extra_retention:.2f}"
     )
 
+
 with f5:
+
     st.metric(
         "🛡️ Fixed COA",
         f"₹{COA_AMOUNT:.2f}"
     )
 
-st.markdown('</div>', unsafe_allow_html=True)
+
+st.markdown(
+    '</div>',
+    unsafe_allow_html=True
+)
 
 
 # ============================================================
-# VALIDATION
+# PAYMENT SAFETY CHECK
 # ============================================================
 
-balance = client_rate - payout_amount - INSURER_PAYMENT
+st.markdown(
+    "### 🔍 Payment Safety Check"
+)
 
-st.markdown("### 🔍 Payment Safety Check")
+
+balance = (
+    client_rate
+    - payout_amount
+    - INSURER_PAYMENT
+)
+
 
 if balance < 0:
 
@@ -606,83 +803,157 @@ if balance < 0:
         """
     )
 
+
 else:
 
     st.success(
         f"""
-        ✅ **Payment Safeguarded**
+        ✅ **Insurer Payment Safeguarded**
 
         The insurer payment of ₹{INSURER_PAYMENT:.2f} is fully covered.
-        The remaining ₹{extra_retention:.2f} becomes additional retention,
-        while the fixed COA of ₹{COA_AMOUNT:.2f} is received later.
+        ₹{extra_retention:.2f} remains as additional retention and
+        ₹{COA_AMOUNT:.2f} is received separately as fixed COA.
         """
     )
 
 
 # ============================================================
-# DETAILED CALCULATION SUMMARY
+# STEP 05 - DETAILED SUMMARY
 # ============================================================
 
 st.markdown("""
-<div class="section-kicker" style="margin-top:35px;">STEP 05</div>
-<div class="section-title">Detailed Calculation Summary</div>
+<div style="margin-top:35px;">
+
+<div class="section-kicker">
+    STEP 05
+</div>
+
+<div class="section-title">
+    Detailed Calculation Summary
+</div>
+
 <div class="section-description">
-A transparent breakdown of premium movement and retention.
+    Complete premium movement and retention breakdown.
+</div>
+
 </div>
 """, unsafe_allow_html=True)
 
+
 summary1, summary2 = st.columns(2)
+
+
+# ------------------------------------------------------------
+# PREMIUM FLOW
+# ------------------------------------------------------------
 
 with summary1:
 
-    st.markdown('<div class="summary-card">', unsafe_allow_html=True)
+    st.markdown(
+        '<div class="summary-card">',
+        unsafe_allow_html=True
+    )
 
     st.markdown("### 💳 Premium Flow")
 
-    st.write(f"**Client Rate Charged:** ₹{client_rate:.2f}")
-    st.write(f"**Less: Payout Amount:** ₹{payout_amount:.2f}")
-    st.write(f"**Less: Insurer Payment:** ₹{INSURER_PAYMENT:.2f}")
+    st.write(
+        f"**Client Rate Charged:** ₹{client_rate:.2f}"
+    )
 
-    st.markdown('</div>', unsafe_allow_html=True)
+    st.write(
+        f"**Less: Payout Amount:** ₹{payout_amount:.2f}"
+    )
 
+    st.write(
+        f"**Less: Insurer Payment:** ₹{INSURER_PAYMENT:.2f}"
+    )
+
+    st.markdown(
+        '</div>',
+        unsafe_allow_html=True
+    )
+
+
+# ------------------------------------------------------------
+# RETENTION FLOW
+# ------------------------------------------------------------
 
 with summary2:
 
-    st.markdown('<div class="summary-card">', unsafe_allow_html=True)
+    st.markdown(
+        '<div class="summary-card">',
+        unsafe_allow_html=True
+    )
 
     st.markdown("### 🏆 Retention Flow")
 
-    st.write(f"**Extra Retention:** ₹{extra_retention:.2f}")
-    st.write(f"**Fixed COA Received Later:** ₹{COA_AMOUNT:.2f}")
-    st.write(f"**Total Retention:** ₹{total_retention:.2f}")
+    st.write(
+        f"**Extra Retention:** ₹{extra_retention:.2f}"
+    )
 
-    st.markdown('</div>', unsafe_allow_html=True)
+    st.write(
+        f"**Fixed COA Received Later:** ₹{COA_AMOUNT:.2f}"
+    )
+
+    st.write(
+        f"**Total Retention:** ₹{total_retention:.2f}"
+    )
+
+    st.markdown(
+        '</div>',
+        unsafe_allow_html=True
+    )
 
 
 # ============================================================
-# BACKEND DETAILS
+# BACKEND PRODUCT DETAILS
 # ============================================================
 
-with st.expander("🔒 View Backend Product Configuration"):
+st.markdown(
+    "### ⚙️ Product Configuration"
+)
+
+
+with st.expander(
+    "View Backend Product Details"
+):
 
     b1, b2, b3 = st.columns(3)
 
+
     with b1:
+
         st.write("**Product**")
+
         st.write(product)
 
+
     with b2:
+
         st.write("**Insurer**")
+
         st.write(insurer)
 
+
     with b3:
+
         st.write("**Sum Assured**")
-        st.write(f"₹{SUM_ASSURED:,.0f}")
+
+        st.write(
+            f"₹{SUM_ASSURED:,.0f}"
+        )
+
 
     st.divider()
 
-    st.write(f"**Amount Payable to Insurer:** ₹{INSURER_PAYMENT:.2f}")
-    st.write(f"**Fixed COA Received Later:** ₹{COA_AMOUNT:.2f}")
+
+    st.write(
+        f"**Amount Payable to Insurer:** ₹{INSURER_PAYMENT:.2f}"
+    )
+
+    st.write(
+        f"**Fixed COA Received Later:** ₹{COA_AMOUNT:.2f}"
+    )
 
 
 # ============================================================
@@ -692,5 +963,5 @@ with st.expander("🔒 View Backend Product Configuration"):
 st.markdown("---")
 
 st.caption(
-    "Policygrace Internal Tool • PA | Manipal Cigna • Calculations per ₹1 Lakh Sum Assured"
+    "Policygrace Internal Pricing Tool • PA | Manipal Cigna • Calculations per ₹1 Lakh Sum Assured"
 )
