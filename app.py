@@ -14,14 +14,94 @@ st.set_page_config(
 
 # ============================================================
 # BACKEND PRODUCT CONFIGURATION
+# DATA TAKEN ONLY FROM SHEET2
 # ============================================================
 
 PRODUCT_CONFIG = {
     "PA": {
-        "Manipal Cigna": {
+        "Care": {
+            "risk_rate": 12.00,
+            "insurer_payment": 14.16,
+            "coa_percent": 8.5,
+            "age_band": "18-65"
+        },
+        "Cigna Manipal": {
+            "risk_rate": 24.00,
             "insurer_payment": 28.32,
-            "coa_amount": 6.00,
-            "sum_assured": 100000
+            "coa_percent": 25.0,
+            "age_band": "18-65"
+        },
+        "Aditya Birla": {
+            "risk_rate": 25.00,
+            "insurer_payment": 25.00,
+            "coa_percent": 25.0,
+            "age_band": "18-65"
+        }
+    },
+
+    "PA HOSPIICASH": {
+        "Magma (18-60)": {
+            "risk_rate": 466.40,
+            "insurer_payment": 550.352,
+            "coa_percent": 10.0,
+            "age_band": "18-65"
+        },
+        "Tata @ 25%": {
+            "risk_rate": 169.00,
+            "insurer_payment": 199.42,
+            "coa_percent": 25.0,
+            "age_band": "18-60"
+        }
+    },
+
+    "PA + Cancer Specific": {
+        "Cigna Manipal": {
+            "risk_rate": 180.00,
+            "insurer_payment": 212.40,
+            "coa_percent": 25.0,
+            "age_band": "18-65"
+        }
+    },
+
+    "Cancer Specific": {
+        "Cigna Manipal": {
+            "risk_rate": 156.00,
+            "insurer_payment": 184.08,
+            "coa_percent": 25.0,
+            "age_band": "18-65"
+        }
+    },
+
+    "GTL": {
+        "Aviva": {
+            "risk_rate": 650.00,
+            "insurer_payment": 767.00,
+            "coa_percent": 10.0,
+            "age_band": "18-65"
+        }
+    },
+
+    "PA + CI": {
+        "Magma": {
+            "risk_rate": 300.00,
+            "insurer_payment": 354.00,
+            "coa_percent": 10.0,
+            "age_band": "18-65"
+        },
+        "Cigna Manipal": {
+            "risk_rate": 368.00,
+            "insurer_payment": 434.24,
+            "coa_percent": 25.0,
+            "age_band": "18-65"
+        }
+    },
+
+    "CI": {
+        "Cigna Manipal": {
+            "risk_rate": 344.00,
+            "insurer_payment": 405.92,
+            "coa_percent": 25.0,
+            "age_band": "18-65"
         }
     }
 }
@@ -33,10 +113,6 @@ PRODUCT_CONFIG = {
 
 st.markdown("""
 <style>
-
-/* =========================================================
-   GLOBAL
-========================================================= */
 
 .stApp {
     background:
@@ -228,7 +304,7 @@ div[data-testid="stSelectbox"] label {
 
 
 /* =========================================================
-   STREAMLIT BRANDING
+   HIDE STREAMLIT BRANDING
 ========================================================= */
 
 #MainMenu {
@@ -266,10 +342,11 @@ st.markdown("""
 <div class="section-kicker">STEP 01</div>
 <div class="section-title">Select Product & Insurer</div>
 <div class="section-description">
-Choose the product and insurer for which you want to calculate pricing,
-payout and retention.
+Choose the product and insurer for which you want to calculate
+pricing, payout and retention.
 </div>
 """, unsafe_allow_html=True)
+
 
 st.markdown('<div class="input-card">', unsafe_allow_html=True)
 
@@ -296,9 +373,20 @@ st.markdown('</div>', unsafe_allow_html=True)
 
 config = PRODUCT_CONFIG[product][insurer]
 
+RISK_RATE = config["risk_rate"]
 INSURER_PAYMENT = config["insurer_payment"]
-COA_AMOUNT = config["coa_amount"]
-SUM_ASSURED = config["sum_assured"]
+COA_PERCENT = config["coa_percent"]
+AGE_BAND = config["age_band"]
+
+
+# ============================================================
+# COA CALCULATION
+# ============================================================
+
+COA_AMOUNT = (
+    RISK_RATE
+    * (COA_PERCENT / 100)
+)
 
 
 # ============================================================
@@ -314,21 +402,25 @@ the payout percentage you wish to provide.
 </div>
 """, unsafe_allow_html=True)
 
+
 st.markdown('<div class="input-card">', unsafe_allow_html=True)
 
 input1, input2 = st.columns(2)
 
 with input1:
+
     st.markdown("#### 💰 Client Pricing")
 
     client_rate = st.number_input(
-        "Final Rate Charged to Client (₹ per ₹1 Lakh SA)",
+        "Final Rate Charged to Client",
         min_value=0.0,
-        value=35.40,
-        step=0.50
+        value=float(INSURER_PAYMENT),
+        step=1.0
     )
 
+
 with input2:
+
     st.markdown("#### 🤝 Payout Requirement")
 
     payout_percent = st.number_input(
@@ -339,6 +431,7 @@ with input2:
         step=1.0
     )
 
+
 st.markdown('</div>', unsafe_allow_html=True)
 
 
@@ -348,7 +441,16 @@ st.markdown('</div>', unsafe_allow_html=True)
 
 payout_decimal = payout_percent / 100
 
-payout_amount = client_rate * payout_decimal
+
+# Amount paid as payout
+
+payout_amount = (
+    client_rate
+    * payout_decimal
+)
+
+
+# Amount remaining after payout and insurer payment
 
 extra_retention = (
     client_rate
@@ -356,7 +458,13 @@ extra_retention = (
     - INSURER_PAYMENT
 )
 
-total_retention = extra_retention + COA_AMOUNT
+
+# Total retention including COA received later
+
+total_retention = (
+    extra_retention
+    + COA_AMOUNT
+)
 
 
 # ============================================================
@@ -372,9 +480,12 @@ and payout percentage.
 </div>
 """, unsafe_allow_html=True)
 
+
 r1, r2, r3, r4 = st.columns(4)
 
+
 with r1:
+
     st.markdown(
         f"""
         <div class="result-card client-card">
@@ -382,14 +493,16 @@ with r1:
             <div class="card-label">CLIENT RATE</div>
             <div class="card-value">₹{client_rate:.2f}</div>
             <div class="card-note">
-                Final price charged per ₹1 Lakh SA
+                Final rate charged to the client
             </div>
         </div>
         """,
         unsafe_allow_html=True
     )
 
+
 with r2:
+
     st.markdown(
         f"""
         <div class="result-card payout-card">
@@ -397,14 +510,16 @@ with r2:
             <div class="card-label">PAYOUT AMOUNT</div>
             <div class="card-value">₹{payout_amount:.2f}</div>
             <div class="card-note">
-                {payout_percent:.2f}% of the client rate
+                {payout_percent:.2f}% of client rate
             </div>
         </div>
         """,
         unsafe_allow_html=True
     )
 
+
 with r3:
+
     st.markdown(
         f"""
         <div class="result-card extra-retention-card">
@@ -412,14 +527,16 @@ with r3:
             <div class="card-label">EXTRA RETENTION</div>
             <div class="card-value">₹{extra_retention:.2f}</div>
             <div class="card-note">
-                Amount retained after payout and insurer payment
+                Retained after payout and insurer payment
             </div>
         </div>
         """,
         unsafe_allow_html=True
     )
 
+
 with r4:
+
     st.markdown(
         f"""
         <div class="result-card total-retention-card">
@@ -427,7 +544,7 @@ with r4:
             <div class="card-label">TOTAL RETENTION</div>
             <div class="card-value">₹{total_retention:.2f}</div>
             <div class="card-note">
-                Extra retention + ₹{COA_AMOUNT:.2f} fixed COA
+                Extra retention + ₹{COA_AMOUNT:.2f} COA
             </div>
         </div>
         """,
@@ -436,7 +553,7 @@ with r4:
 
 
 # ============================================================
-# STEP 04 - PAYMENT FLOW
+# STEP 04 - PREMIUM FLOW
 # ============================================================
 
 st.markdown("""
@@ -449,12 +566,18 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
+
 st.markdown('<div class="flow-card">', unsafe_allow_html=True)
 
 f1, f2, f3, f4, f5 = st.columns(5)
 
+
 with f1:
-    st.metric("💳 Client Pays", f"₹{client_rate:.2f}")
+    st.metric(
+        "💳 Client Pays",
+        f"₹{client_rate:.2f}"
+    )
+
 
 with f2:
     st.metric(
@@ -463,11 +586,13 @@ with f2:
         f"{payout_percent:.0f}%"
     )
 
+
 with f3:
     st.metric(
         "🏢 Insurer Payment",
         f"₹{INSURER_PAYMENT:.2f}"
     )
+
 
 with f4:
     st.metric(
@@ -475,11 +600,13 @@ with f4:
         f"₹{extra_retention:.2f}"
     )
 
+
 with f5:
     st.metric(
-        "🛡️ Fixed COA",
+        "🛡️ COA Amount",
         f"₹{COA_AMOUNT:.2f}"
     )
+
 
 st.markdown('</div>', unsafe_allow_html=True)
 
@@ -490,31 +617,40 @@ st.markdown('</div>', unsafe_allow_html=True)
 
 st.markdown("### 🔍 Payment Safety Check")
 
-balance = client_rate - payout_amount - INSURER_PAYMENT
+
+balance = (
+    client_rate
+    - payout_amount
+    - INSURER_PAYMENT
+)
+
 
 if balance < 0:
+
     st.error(
         f"""
         ⚠️ Insufficient Client Rate
 
-        After providing the payout, the remaining premium is insufficient
-        to fully cover the insurer payment of ₹{INSURER_PAYMENT:.2f}.
+        After payout, the remaining amount is insufficient
+        to cover the insurer payment of ₹{INSURER_PAYMENT:.2f}.
         """
     )
+
 else:
+
     st.success(
         f"""
         ✅ Insurer Payment Safeguarded
 
         The insurer payment of ₹{INSURER_PAYMENT:.2f} is fully covered.
-        ₹{extra_retention:.2f} remains as additional retention, while
-        ₹{COA_AMOUNT:.2f} is received separately as fixed COA.
+        ₹{extra_retention:.2f} remains as additional retention.
+        An additional ₹{COA_AMOUNT:.2f} is received as COA.
         """
     )
 
 
 # ============================================================
-# STEP 05 - DETAILED CALCULATION SUMMARY
+# STEP 05 - DETAILED SUMMARY
 # ============================================================
 
 st.markdown("""
@@ -527,36 +663,44 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
+
 summary1, summary2 = st.columns(2)
 
+
 with summary1:
+
     st.markdown('<div class="summary-card">', unsafe_allow_html=True)
 
     st.markdown("### 💳 Premium Flow")
+
     st.write(f"**Client Rate Charged:** ₹{client_rate:.2f}")
     st.write(f"**Less: Payout Amount:** ₹{payout_amount:.2f}")
     st.write(f"**Less: Insurer Payment:** ₹{INSURER_PAYMENT:.2f}")
 
     st.markdown('</div>', unsafe_allow_html=True)
 
+
 with summary2:
+
     st.markdown('<div class="summary-card">', unsafe_allow_html=True)
 
     st.markdown("### 🏆 Retention Flow")
+
     st.write(f"**Extra Retention:** ₹{extra_retention:.2f}")
-    st.write(f"**Fixed COA Received Later:** ₹{COA_AMOUNT:.2f}")
+    st.write(f"**COA Amount:** ₹{COA_AMOUNT:.2f}")
     st.write(f"**Total Retention:** ₹{total_retention:.2f}")
 
     st.markdown('</div>', unsafe_allow_html=True)
 
 
 # ============================================================
-# PRODUCT CONFIGURATION
+# BACKEND PRODUCT DETAILS
 # ============================================================
 
 st.markdown("### ⚙️ Product Configuration")
 
-with st.expander("View Backend Product Details"):
+
+with st.expander("View Product & Insurer Details"):
 
     b1, b2, b3 = st.columns(3)
 
@@ -569,18 +713,36 @@ with st.expander("View Backend Product Details"):
         st.write(insurer)
 
     with b3:
-        st.write("**Sum Assured**")
-        st.write(f"₹{SUM_ASSURED:,.0f}")
+        st.write("**Age Band**")
+        st.write(AGE_BAND)
 
     st.divider()
 
-    st.write(
-        f"**Amount Payable to Insurer:** ₹{INSURER_PAYMENT:.2f}"
-    )
+    d1, d2, d3, d4 = st.columns(4)
 
-    st.write(
-        f"**Fixed COA Received Later:** ₹{COA_AMOUNT:.2f}"
-    )
+    with d1:
+        st.metric(
+            "Risk Rate",
+            f"₹{RISK_RATE:.2f}"
+        )
+
+    with d2:
+        st.metric(
+            "Insurer Payment",
+            f"₹{INSURER_PAYMENT:.2f}"
+        )
+
+    with d3:
+        st.metric(
+            "COA %",
+            f"{COA_PERCENT:.2f}%"
+        )
+
+    with d4:
+        st.metric(
+            "COA Amount",
+            f"₹{COA_AMOUNT:.2f}"
+        )
 
 
 # ============================================================
@@ -590,5 +752,5 @@ with st.expander("View Backend Product Details"):
 st.markdown("---")
 
 st.caption(
-    "Policygrace Internal Pricing Tool • PA | Manipal Cigna • Calculations per ₹1 Lakh Sum Assured"
+    "Policygrace Internal Pricing Tool • Product rates configured from Sheet2"
 )
