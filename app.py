@@ -14,7 +14,7 @@ st.set_page_config(
 
 # ============================================================
 # BACKEND PRODUCT CONFIGURATION
-# DATA TAKEN ONLY FROM SHEET2
+# DATA FROM SHEET2 ONLY
 # ============================================================
 
 PRODUCT_CONFIG = {
@@ -23,35 +23,30 @@ PRODUCT_CONFIG = {
             "risk_rate": 12.00,
             "insurer_payment": 14.16,
             "coa_percent": 8.5,
-            "age_band": "18-65"
         },
         "Cigna Manipal": {
             "risk_rate": 24.00,
             "insurer_payment": 28.32,
             "coa_percent": 25.0,
-            "age_band": "18-65"
         },
         "Aditya Birla": {
             "risk_rate": 25.00,
             "insurer_payment": 25.00,
             "coa_percent": 25.0,
-            "age_band": "18-65"
-        }
+        },
     },
 
-    "PA HOSPIICASH": {
-        "Magma (18-60)": {
+    "PA HOSPICASH": {
+        "Magma": {
             "risk_rate": 466.40,
-            "insurer_payment": 550.352,
+            "insurer_payment": 550.35,
             "coa_percent": 10.0,
-            "age_band": "18-65"
         },
-        "Tata @ 25%": {
+        "Tata": {
             "risk_rate": 169.00,
             "insurer_payment": 199.42,
             "coa_percent": 25.0,
-            "age_band": "18-60"
-        }
+        },
     },
 
     "PA + Cancer Specific": {
@@ -59,8 +54,7 @@ PRODUCT_CONFIG = {
             "risk_rate": 180.00,
             "insurer_payment": 212.40,
             "coa_percent": 25.0,
-            "age_band": "18-65"
-        }
+        },
     },
 
     "Cancer Specific": {
@@ -68,8 +62,7 @@ PRODUCT_CONFIG = {
             "risk_rate": 156.00,
             "insurer_payment": 184.08,
             "coa_percent": 25.0,
-            "age_band": "18-65"
-        }
+        },
     },
 
     "GTL": {
@@ -77,8 +70,7 @@ PRODUCT_CONFIG = {
             "risk_rate": 650.00,
             "insurer_payment": 767.00,
             "coa_percent": 10.0,
-            "age_band": "18-65"
-        }
+        },
     },
 
     "PA + CI": {
@@ -86,14 +78,12 @@ PRODUCT_CONFIG = {
             "risk_rate": 300.00,
             "insurer_payment": 354.00,
             "coa_percent": 10.0,
-            "age_band": "18-65"
         },
         "Cigna Manipal": {
             "risk_rate": 368.00,
             "insurer_payment": 434.24,
             "coa_percent": 25.0,
-            "age_band": "18-65"
-        }
+        },
     },
 
     "CI": {
@@ -101,9 +91,8 @@ PRODUCT_CONFIG = {
             "risk_rate": 344.00,
             "insurer_payment": 405.92,
             "coa_percent": 25.0,
-            "age_band": "18-65"
-        }
-    }
+        },
+    },
 }
 
 
@@ -122,15 +111,12 @@ st.markdown("""
 }
 
 .block-container {
-    max-width: 1250px;
+    max-width: 1150px;
     padding-top: 2.5rem;
-    padding-bottom: 3rem;
 }
 
 
-/* =========================================================
-   APP TITLE
-========================================================= */
+/* TITLE */
 
 .app-title {
     font-size: 36px;
@@ -143,73 +129,58 @@ st.markdown("""
 .app-subtitle {
     font-size: 16px;
     color: #64748b;
-    margin-bottom: 32px;
+    margin-bottom: 35px;
 }
 
 
-/* =========================================================
-   SECTION HEADINGS
-========================================================= */
+/* SECTION */
 
 .section-kicker {
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 800;
     letter-spacing: 1.3px;
     color: #2563eb;
-    margin-bottom: 6px;
+    margin-bottom: 5px;
 }
 
 .section-title {
-    font-size: 28px;
+    font-size: 25px;
     font-weight: 800;
     color: #0f172a;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
 }
 
 .section-description {
-    font-size: 15px;
+    font-size: 14px;
     color: #64748b;
-    margin-bottom: 20px;
+    margin-bottom: 18px;
 }
 
 
-/* =========================================================
-   INPUT CARDS
-========================================================= */
+/* INPUTS */
 
-.input-card {
-    background: rgba(255, 255, 255, 0.97);
-    padding: 30px;
-    border-radius: 22px;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
-    margin-bottom: 32px;
+div[data-testid="stSelectbox"] > div > div {
+    border-radius: 10px;
+}
+
+div[data-testid="stNumberInput"] input {
+    border-radius: 10px;
+}
+
+div[data-testid="stNumberInput"] label,
+div[data-testid="stSelectbox"] label {
+    font-weight: 700;
 }
 
 
-/* =========================================================
-   RESULT CARDS
-========================================================= */
+/* RESULT CARDS */
 
 .result-card {
-    border-radius: 22px;
-    padding: 27px;
-    min-height: 210px;
+    border-radius: 20px;
+    padding: 24px;
+    min-height: 175px;
     color: white;
-    box-shadow: 0 16px 35px rgba(15, 23, 42, 0.14);
-    position: relative;
-    overflow: hidden;
-}
-
-.result-card::after {
-    content: "";
-    position: absolute;
-    width: 140px;
-    height: 140px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.08);
-    right: -45px;
-    top: -45px;
+    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.12);
 }
 
 .client-card {
@@ -220,92 +191,36 @@ st.markdown("""
     background: linear-gradient(135deg, #047857, #10b981);
 }
 
-.extra-retention-card {
+.retention-card {
     background: linear-gradient(135deg, #c2410c, #f97316);
 }
 
-.total-retention-card {
+.total-card {
     background: linear-gradient(135deg, #111827, #334155);
 }
 
-.card-icon {
-    font-size: 28px;
-    margin-bottom: 15px;
-}
-
 .card-label {
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 800;
     letter-spacing: 1px;
-    opacity: 0.82;
-    margin-bottom: 13px;
+    opacity: 0.85;
+    margin-bottom: 16px;
 }
 
 .card-value {
-    font-size: 39px;
+    font-size: 35px;
     font-weight: 850;
     letter-spacing: -1px;
-    line-height: 1;
 }
 
 .card-note {
-    font-size: 13px;
-    margin-top: 17px;
+    font-size: 12px;
+    margin-top: 15px;
     opacity: 0.80;
-    line-height: 1.5;
 }
 
 
-/* =========================================================
-   PAYMENT FLOW
-========================================================= */
-
-.flow-card {
-    background: white;
-    padding: 30px;
-    border-radius: 22px;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
-}
-
-
-/* =========================================================
-   SUMMARY
-========================================================= */
-
-.summary-card {
-    background: white;
-    padding: 28px;
-    border-radius: 20px;
-    border: 1px solid #e2e8f0;
-    min-height: 220px;
-    box-shadow: 0 8px 25px rgba(15, 23, 42, 0.05);
-}
-
-
-/* =========================================================
-   INPUT STYLING
-========================================================= */
-
-div[data-testid="stSelectbox"] > div > div {
-    border-radius: 12px;
-}
-
-div[data-testid="stNumberInput"] input {
-    border-radius: 12px;
-    font-size: 16px;
-}
-
-div[data-testid="stNumberInput"] label,
-div[data-testid="stSelectbox"] label {
-    font-weight: 700;
-    color: #334155;
-}
-
-
-/* =========================================================
-   HIDE STREAMLIT BRANDING
-========================================================= */
+/* HIDE STREAMLIT BRANDING */
 
 #MainMenu {
     visibility: hidden;
@@ -329,7 +244,7 @@ st.markdown("""
 </div>
 
 <div class="app-subtitle">
-    Analyse client pricing, payout and retention while safeguarding insurer payments.
+    Calculate client pricing, payout and retention instantly.
 </div>
 """, unsafe_allow_html=True)
 
@@ -342,29 +257,23 @@ st.markdown("""
 <div class="section-kicker">STEP 01</div>
 <div class="section-title">Select Product & Insurer</div>
 <div class="section-description">
-Choose the product and insurer for which you want to calculate
-pricing, payout and retention.
+Choose the product and insurer.
 </div>
 """, unsafe_allow_html=True)
-
-
-st.markdown('<div class="input-card">', unsafe_allow_html=True)
 
 col1, col2 = st.columns(2)
 
 with col1:
     product = st.selectbox(
-        "🛡️ Select Product",
-        options=list(PRODUCT_CONFIG.keys())
+        "Select Product",
+        list(PRODUCT_CONFIG.keys())
     )
 
 with col2:
     insurer = st.selectbox(
-        "🏢 Select Insurer",
-        options=list(PRODUCT_CONFIG[product].keys())
+        "Select Insurer",
+        list(PRODUCT_CONFIG[product].keys())
     )
-
-st.markdown('</div>', unsafe_allow_html=True)
 
 
 # ============================================================
@@ -373,376 +282,128 @@ st.markdown('</div>', unsafe_allow_html=True)
 
 config = PRODUCT_CONFIG[product][insurer]
 
-RISK_RATE = config["risk_rate"]
-INSURER_PAYMENT = config["insurer_payment"]
-COA_PERCENT = config["coa_percent"]
-AGE_BAND = config["age_band"]
+risk_rate = config["risk_rate"]
+insurer_payment = config["insurer_payment"]
+coa_percent = config["coa_percent"]
+
+coa_amount = risk_rate * (coa_percent / 100)
 
 
 # ============================================================
-# COA CALCULATION
+# STEP 02 - INPUT
 # ============================================================
 
-COA_AMOUNT = (
-    RISK_RATE
-    * (COA_PERCENT / 100)
-)
-
-
-# ============================================================
-# STEP 02 - CLIENT PRICING & PAYOUT
-# ============================================================
+st.markdown("<br>", unsafe_allow_html=True)
 
 st.markdown("""
 <div class="section-kicker">STEP 02</div>
 <div class="section-title">Enter Client Pricing & Payout</div>
 <div class="section-description">
-Enter the final rate you are willing to charge the client and
-the payout percentage you wish to provide.
+Enter the final client rate and desired payout percentage.
 </div>
 """, unsafe_allow_html=True)
-
-
-st.markdown('<div class="input-card">', unsafe_allow_html=True)
 
 input1, input2 = st.columns(2)
 
 with input1:
-
-    st.markdown("#### 💰 Client Pricing")
-
     client_rate = st.number_input(
-        "Final Rate Charged to Client",
+        "Final Rate Charged to Client (₹)",
         min_value=0.0,
-        value=float(INSURER_PAYMENT),
+        value=float(insurer_payment),
         step=1.0
     )
 
-
 with input2:
-
-    st.markdown("#### 🤝 Payout Requirement")
-
     payout_percent = st.number_input(
         "Payout Percentage (%)",
         min_value=0.0,
         max_value=100.0,
-        value=20.0,
+        value=10.0,
         step=1.0
     )
-
-
-st.markdown('</div>', unsafe_allow_html=True)
 
 
 # ============================================================
 # CALCULATIONS
 # ============================================================
 
-payout_decimal = payout_percent / 100
-
-
-# Amount paid as payout
-
-payout_amount = (
-    client_rate
-    * payout_decimal
-)
-
-
-# Amount remaining after payout and insurer payment
+payout_amount = client_rate * (payout_percent / 100)
 
 extra_retention = (
     client_rate
     - payout_amount
-    - INSURER_PAYMENT
+    - insurer_payment
 )
-
-
-# Total retention including COA received later
 
 total_retention = (
     extra_retention
-    + COA_AMOUNT
+    + coa_amount
 )
 
 
 # ============================================================
-# STEP 03 - CALCULATION RESULTS
+# STEP 03 - RESULTS
 # ============================================================
+
+st.markdown("<br>", unsafe_allow_html=True)
 
 st.markdown("""
 <div class="section-kicker">STEP 03</div>
 <div class="section-title">Calculation Results</div>
 <div class="section-description">
-Review the financial outcome based on the selected client rate
-and payout percentage.
+Instant payout and retention calculation.
 </div>
 """, unsafe_allow_html=True)
-
 
 r1, r2, r3, r4 = st.columns(4)
 
-
 with r1:
-
     st.markdown(
         f"""
         <div class="result-card client-card">
-            <div class="card-icon">💰</div>
             <div class="card-label">CLIENT RATE</div>
             <div class="card-value">₹{client_rate:.2f}</div>
-            <div class="card-note">
-                Final rate charged to the client
-            </div>
+            <div class="card-note">Final rate charged to client</div>
         </div>
         """,
         unsafe_allow_html=True
     )
 
-
 with r2:
-
     st.markdown(
         f"""
         <div class="result-card payout-card">
-            <div class="card-icon">🤝</div>
             <div class="card-label">PAYOUT AMOUNT</div>
             <div class="card-value">₹{payout_amount:.2f}</div>
-            <div class="card-note">
-                {payout_percent:.2f}% of client rate
-            </div>
+            <div class="card-note">{payout_percent:.0f}% payout</div>
         </div>
         """,
         unsafe_allow_html=True
     )
-
 
 with r3:
-
     st.markdown(
         f"""
-        <div class="result-card extra-retention-card">
-            <div class="card-icon">📈</div>
+        <div class="result-card retention-card">
             <div class="card-label">EXTRA RETENTION</div>
             <div class="card-value">₹{extra_retention:.2f}</div>
-            <div class="card-note">
-                Retained after payout and insurer payment
-            </div>
+            <div class="card-note">After payout & insurer payment</div>
         </div>
         """,
         unsafe_allow_html=True
     )
-
 
 with r4:
-
     st.markdown(
         f"""
-        <div class="result-card total-retention-card">
-            <div class="card-icon">🏆</div>
+        <div class="result-card total-card">
             <div class="card-label">TOTAL RETENTION</div>
             <div class="card-value">₹{total_retention:.2f}</div>
-            <div class="card-note">
-                Extra retention + ₹{COA_AMOUNT:.2f} COA
-            </div>
+            <div class="card-note">Includes fixed COA</div>
         </div>
         """,
         unsafe_allow_html=True
     )
-
-
-# ============================================================
-# STEP 04 - PREMIUM FLOW
-# ============================================================
-
-st.markdown("""
-<div style="margin-top:40px;">
-    <div class="section-kicker">STEP 04</div>
-    <div class="section-title">Premium & Payment Flow</div>
-    <div class="section-description">
-        Understand exactly how the client premium is distributed.
-    </div>
-</div>
-""", unsafe_allow_html=True)
-
-
-st.markdown('<div class="flow-card">', unsafe_allow_html=True)
-
-f1, f2, f3, f4, f5 = st.columns(5)
-
-
-with f1:
-    st.metric(
-        "💳 Client Pays",
-        f"₹{client_rate:.2f}"
-    )
-
-
-with f2:
-    st.metric(
-        "🤝 Payout",
-        f"₹{payout_amount:.2f}",
-        f"{payout_percent:.0f}%"
-    )
-
-
-with f3:
-    st.metric(
-        "🏢 Insurer Payment",
-        f"₹{INSURER_PAYMENT:.2f}"
-    )
-
-
-with f4:
-    st.metric(
-        "📈 Extra Retention",
-        f"₹{extra_retention:.2f}"
-    )
-
-
-with f5:
-    st.metric(
-        "🛡️ COA Amount",
-        f"₹{COA_AMOUNT:.2f}"
-    )
-
-
-st.markdown('</div>', unsafe_allow_html=True)
-
-
-# ============================================================
-# PAYMENT SAFETY CHECK
-# ============================================================
-
-st.markdown("### 🔍 Payment Safety Check")
-
-
-balance = (
-    client_rate
-    - payout_amount
-    - INSURER_PAYMENT
-)
-
-
-if balance < 0:
-
-    st.error(
-        f"""
-        ⚠️ Insufficient Client Rate
-
-        After payout, the remaining amount is insufficient
-        to cover the insurer payment of ₹{INSURER_PAYMENT:.2f}.
-        """
-    )
-
-else:
-
-    st.success(
-        f"""
-        ✅ Insurer Payment Safeguarded
-
-        The insurer payment of ₹{INSURER_PAYMENT:.2f} is fully covered.
-        ₹{extra_retention:.2f} remains as additional retention.
-        An additional ₹{COA_AMOUNT:.2f} is received as COA.
-        """
-    )
-
-
-# ============================================================
-# STEP 05 - DETAILED SUMMARY
-# ============================================================
-
-st.markdown("""
-<div style="margin-top:35px;">
-    <div class="section-kicker">STEP 05</div>
-    <div class="section-title">Detailed Calculation Summary</div>
-    <div class="section-description">
-        Complete premium movement and retention breakdown.
-    </div>
-</div>
-""", unsafe_allow_html=True)
-
-
-summary1, summary2 = st.columns(2)
-
-
-with summary1:
-
-    st.markdown('<div class="summary-card">', unsafe_allow_html=True)
-
-    st.markdown("### 💳 Premium Flow")
-
-    st.write(f"**Client Rate Charged:** ₹{client_rate:.2f}")
-    st.write(f"**Less: Payout Amount:** ₹{payout_amount:.2f}")
-    st.write(f"**Less: Insurer Payment:** ₹{INSURER_PAYMENT:.2f}")
-
-    st.markdown('</div>', unsafe_allow_html=True)
-
-
-with summary2:
-
-    st.markdown('<div class="summary-card">', unsafe_allow_html=True)
-
-    st.markdown("### 🏆 Retention Flow")
-
-    st.write(f"**Extra Retention:** ₹{extra_retention:.2f}")
-    st.write(f"**COA Amount:** ₹{COA_AMOUNT:.2f}")
-    st.write(f"**Total Retention:** ₹{total_retention:.2f}")
-
-    st.markdown('</div>', unsafe_allow_html=True)
-
-
-# ============================================================
-# BACKEND PRODUCT DETAILS
-# ============================================================
-
-st.markdown("### ⚙️ Product Configuration")
-
-
-with st.expander("View Product & Insurer Details"):
-
-    b1, b2, b3 = st.columns(3)
-
-    with b1:
-        st.write("**Product**")
-        st.write(product)
-
-    with b2:
-        st.write("**Insurer**")
-        st.write(insurer)
-
-    with b3:
-        st.write("**Age Band**")
-        st.write(AGE_BAND)
-
-    st.divider()
-
-    d1, d2, d3, d4 = st.columns(4)
-
-    with d1:
-        st.metric(
-            "Risk Rate",
-            f"₹{RISK_RATE:.2f}"
-        )
-
-    with d2:
-        st.metric(
-            "Insurer Payment",
-            f"₹{INSURER_PAYMENT:.2f}"
-        )
-
-    with d3:
-        st.metric(
-            "COA %",
-            f"{COA_PERCENT:.2f}%"
-        )
-
-    with d4:
-        st.metric(
-            "COA Amount",
-            f"₹{COA_AMOUNT:.2f}"
-        )
 
 
 # ============================================================
@@ -752,5 +413,5 @@ with st.expander("View Product & Insurer Details"):
 st.markdown("---")
 
 st.caption(
-    "Policygrace Internal Pricing Tool • Product rates configured from Sheet2"
+    "Policygrace Internal Pricing Tool • Rates configured from Sheet2"
 )
