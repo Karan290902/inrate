@@ -1,5 +1,4 @@
 import streamlit as st
-import textwrap
 
 # ============================================================
 # PAGE CONFIG
@@ -11,18 +10,6 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="collapsed"
 )
-
-
-# ============================================================
-# HELPER FUNCTION
-# FIXES HTML INDENTATION ISSUE
-# ============================================================
-
-def render_html(html):
-    st.markdown(
-        textwrap.dedent(html),
-        unsafe_allow_html=True
-    )
 
 
 # ============================================================
@@ -162,7 +149,7 @@ RATE_MASTER = {
 
 
 # ============================================================
-# CALCULATION ENGINE
+# CALCULATION FUNCTION
 # ============================================================
 
 def calculate_inrate(
@@ -172,73 +159,42 @@ def calculate_inrate(
     coa_percent
 ):
 
-    # ========================================================
-    # CASE 1
     # CLIENT RATE ENTERED
-    #
-    # X AMOUNT =
-    # (CLIENT RATE - GROSS RATE) / 1.18
-    # ========================================================
-
     if client_rate > 0:
 
+        # Difference from insurer gross rate
         difference = client_rate - gross_rate
 
+        # Remove GST from difference
         x_amount = difference / 1.18
+
+        x_note = "Net additional amount"
 
         denominator = client_rate
 
-        x_note = "Net additional amount excluding GST"
-
-
-    # ========================================================
-    # CASE 2
     # CLIENT RATE NOT ENTERED
-    #
-    # X AMOUNT =
-    # GROSS RATE / 1.18
-    #
-    # SHOWS NET AMOUNT
-    # ========================================================
-
     else:
 
+        # Show insurer amount excluding GST
         x_amount = gross_rate / 1.18
+
+        x_note = "Net insurer amount"
 
         denominator = gross_rate
 
-        x_note = "Net insurer amount excluding GST"
-
-
-    # ========================================================
     # COA AMOUNT
-    # INTERNAL BACKEND CALCULATION
-    # ========================================================
-
     coa_amount = base_rate * (coa_percent / 100)
 
-
-    # ========================================================
-    # IN-RATE AMOUNT
-    # ========================================================
-
+    # TOTAL IN-RATE AMOUNT
     inrate_amount = x_amount + coa_amount
 
-
-    # ========================================================
-    # FINAL IN-RATE PERCENTAGE
-    # ========================================================
-
+    # FINAL IN-RATE %
     if denominator > 0:
-
         inrate_percentage = (
             inrate_amount / denominator
         ) * 100
-
     else:
-
         inrate_percentage = 0.0
-
 
     return {
         "x_amount": x_amount,
@@ -250,359 +206,72 @@ def calculate_inrate(
 
 
 # ============================================================
-# CSS
+# SIMPLE CSS ONLY
+# NO HTML DIV ELEMENTS
 # ============================================================
 
-render_html("""
+st.markdown("""
 <style>
 
 .stApp {
-    background: #f4f7fb;
+    background-color: #f5f7fb;
 }
 
 .block-container {
-    max-width: 1400px;
-    padding-top: 1.5rem;
+    max-width: 1350px;
+    padding-top: 2rem;
     padding-bottom: 2rem;
 }
 
-#MainMenu {
-    visibility: hidden;
+h1, h2, h3 {
+    color: #172033;
 }
 
-footer {
-    visibility: hidden;
+[data-testid="stMetric"] {
+    background-color: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    padding: 20px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
 }
 
-header {
-    background: transparent !important;
-}
-
-
-/* ============================================================
-   HEADER
-============================================================ */
-
-.top-header {
-    background: linear-gradient(
-        135deg,
-        #111827,
-        #1e293b,
-        #294d8f
-    );
-
-    padding: 30px 35px;
-    border-radius: 20px;
-    margin-bottom: 28px;
-
-    box-shadow:
-        0px 14px 32px
-        rgba(15, 23, 42, 0.18);
-}
-
-.header-badge {
-    color: #bfdbfe;
-
-    font-size: 10px;
-    font-weight: 800;
-
-    letter-spacing: 1.5px;
-
-    margin-bottom: 12px;
-}
-
-.header-title {
-    color: white;
-
-    font-size: 34px;
-    font-weight: 800;
-
-    margin-bottom: 8px;
-}
-
-.header-subtitle {
-    color: #cbd5e1;
-
-    font-size: 14px;
-}
-
-
-/* ============================================================
-   SECTION HEADINGS
-============================================================ */
-
-.section-label {
-    color: #2563eb;
-
-    font-size: 10px;
-    font-weight: 800;
-
-    letter-spacing: 1.5px;
-
-    margin-bottom: 5px;
-}
-
-.section-title {
-    color: #1e293b;
-
-    font-size: 23px;
-    font-weight: 800;
-
-    margin-bottom: 5px;
-}
-
-.section-text {
-    color: #64748b;
-
-    font-size: 12px;
-
-    margin-bottom: 18px;
-}
-
-
-/* ============================================================
-   KPI CARDS
-============================================================ */
-
-.metric-card {
-
-    min-height: 160px;
-
-    padding: 22px;
-
-    border-radius: 18px;
-
-    color: white;
-
-    box-shadow:
-        0px 10px 24px
-        rgba(15, 23, 42, 0.14);
-
-    position: relative;
-
-    overflow: hidden;
-}
-
-.metric-card:after {
-
-    content: "";
-
-    position: absolute;
-
-    width: 100px;
-    height: 100px;
-
-    border-radius: 50%;
-
-    top: -35px;
-    right: -35px;
-
-    background:
-        rgba(255,255,255,0.10);
-}
-
-.metric-purple {
-    background:
-        linear-gradient(
-            135deg,
-            #3730a3,
-            #6366f1
-        );
-}
-
-.metric-green {
-    background:
-        linear-gradient(
-            135deg,
-            #0f766e,
-            #14b8a6
-        );
-}
-
-.metric-orange {
-    background:
-        linear-gradient(
-            135deg,
-            #c2410c,
-            #f97316
-        );
-}
-
-.metric-dark {
-    background:
-        linear-gradient(
-            135deg,
-            #1e293b,
-            #475569
-        );
-}
-
-.metric-label {
-
-    font-size: 10px;
-
-    font-weight: 800;
-
-    letter-spacing: 1px;
-
-    opacity: 0.85;
-
-    margin-bottom: 24px;
-
-    position: relative;
-
-    z-index: 2;
-}
-
-.metric-value {
-
-    font-size: 30px;
-
-    font-weight: 800;
-
-    position: relative;
-
-    z-index: 2;
-}
-
-.metric-note {
-
-    font-size: 11px;
-
-    margin-top: 18px;
-
-    opacity: 0.85;
-
-    position: relative;
-
-    z-index: 2;
-}
-
-
-/* ============================================================
-   FINAL RESULT
-============================================================ */
-
-.final-card {
-
-    background:
-        linear-gradient(
-            135deg,
-            #1e40af,
-            #2563eb,
-            #3b82f6
-        );
-
-    padding: 32px;
-
-    border-radius: 22px;
-
-    text-align: center;
-
-    color: white;
-
-    margin-top: 22px;
-
-    box-shadow:
-        0px 15px 35px
-        rgba(37, 99, 235, 0.25);
-}
-
-.final-label {
-
-    font-size: 11px;
-
-    font-weight: 800;
-
-    letter-spacing: 1.8px;
-
-    opacity: 0.85;
-}
-
-.final-value {
-
-    font-size: 52px;
-
-    font-weight: 800;
-
-    margin-top: 8px;
-}
-
-.final-note {
-
-    font-size: 12px;
-
-    opacity: 0.85;
-
-    margin-top: 7px;
-}
-
-
-/* ============================================================
-   FOOTER
-============================================================ */
-
-.app-footer {
-
-    text-align: center;
-
-    color: #94a3b8;
-
-    font-size: 11px;
-
-    margin-top: 35px;
-
-    padding-bottom: 10px;
+[data-testid="stMetricLabel"] {
+    font-weight: 700;
 }
 
 </style>
-""")
+""", unsafe_allow_html=True)
 
 
 # ============================================================
 # HEADER
 # ============================================================
 
-render_html("""
-<div class="top-header">
+st.title("🛡️ Insurance In-Rate Calculator")
 
-    <div class="header-badge">
-        POLICYGRACE • INTERNAL PRICING TOOL
-    </div>
+st.caption(
+    "POLICYGRACE • INTERNAL PRICING TOOL"
+)
 
-    <div class="header-title">
-        Insurance In-Rate Calculator
-    </div>
+st.write(
+    "Analyse insurer pricing, client rates and internal "
+    "in-rate calculations in one place."
+)
 
-    <div class="header-subtitle">
-        Analyse insurer pricing, client rates and internal in-rate calculations.
-    </div>
-
-</div>
-""")
+st.divider()
 
 
 # ============================================================
-# PRODUCT SELECTION
+# CONFIGURATION
 # ============================================================
 
-render_html("""
-<div class="section-label">
-    CONFIGURATION
-</div>
+st.subheader("Select Product & Insurer")
 
-<div class="section-title">
-    Select Product & Insurer
-</div>
-
-<div class="section-text">
-    Select the product and insurer to load backend pricing.
-</div>
-""")
-
+st.caption(
+    "Choose the product and insurer to load backend pricing."
+)
 
 col1, col2 = st.columns(2)
-
 
 with col1:
 
@@ -610,7 +279,6 @@ with col1:
         "Product",
         options=list(RATE_MASTER.keys())
     )
-
 
 with col2:
 
@@ -621,7 +289,7 @@ with col2:
 
 
 # ============================================================
-# BACKEND CONFIGURATION
+# GET BACKEND CONFIGURATION
 # ============================================================
 
 config = RATE_MASTER[product][insurer]
@@ -648,34 +316,29 @@ variable_rate = config.get(
 if variable_rate:
 
     st.warning(
-        "This product has a variable rate based on age and loan tenure."
+        "This product has a variable rate based on age "
+        "and loan tenure."
+    )
+
+    st.info(
+        "Please configure the required rate before calculation."
     )
 
     st.stop()
 
 
 # ============================================================
-# CLIENT RATE
+# CLIENT PRICING
 # ============================================================
 
-st.markdown("<br>", unsafe_allow_html=True)
+st.divider()
 
+st.subheader("Enter Client Rate")
 
-render_html("""
-<div class="section-label">
-    CLIENT PRICING
-</div>
-
-<div class="section-title">
-    Enter Client Rate
-</div>
-
-<div class="section-text">
-    Enter the final rate to be charged to the client.
-    Leave ₹0 to calculate the net insurer amount excluding GST.
-</div>
-""")
-
+st.caption(
+    "Enter the final rate to be charged to the client. "
+    "Leave ₹0 to calculate the net insurer amount."
+)
 
 client_rate = st.number_input(
     "Client Rate (₹)",
@@ -687,7 +350,7 @@ client_rate = st.number_input(
 
 
 # ============================================================
-# CALCULATE RESULTS
+# CALCULATE
 # ============================================================
 
 result = calculate_inrate(
@@ -699,25 +362,17 @@ result = calculate_inrate(
 
 
 # ============================================================
-# RESULTS SECTION
+# RESULTS
 # ============================================================
 
-st.markdown("<br>", unsafe_allow_html=True)
+st.divider()
 
+st.subheader("Calculation Results")
 
-render_html("""
-<div class="section-label">
-    CALCULATION RESULTS
-</div>
-
-<div class="section-title">
-    Pricing Dashboard
-</div>
-
-<div class="section-text">
-    Live calculation based on the selected insurer and client rate.
-</div>
-""")
+st.caption(
+    "Live calculation based on the selected insurer "
+    "and client rate."
+)
 
 
 # ============================================================
@@ -727,127 +382,95 @@ render_html("""
 c1, c2, c3, c4 = st.columns(4)
 
 
-# INSURER GROSS RATE
-
 with c1:
 
-    render_html(f"""
-    <div class="metric-card metric-purple">
+    st.metric(
+        label="INSURER GROSS RATE",
+        value=f"₹{gross_rate:,.2f}"
+    )
 
-        <div class="metric-label">
-            INSURER GROSS RATE
-        </div>
+    st.caption(
+        "Insurer payment including GST"
+    )
 
-        <div class="metric-value">
-            ₹{gross_rate:,.2f}
-        </div>
-
-        <div class="metric-note">
-            Insurer payment including GST
-        </div>
-
-    </div>
-    """)
-
-
-# X AMOUNT
 
 with c2:
 
-    render_html(f"""
-    <div class="metric-card metric-green">
+    st.metric(
+        label="X AMOUNT",
+        value=f"₹{result['x_amount']:,.2f}"
+    )
 
-        <div class="metric-label">
-            X AMOUNT
-        </div>
+    st.caption(
+        result["x_note"]
+    )
 
-        <div class="metric-value">
-            ₹{result["x_amount"]:,.2f}
-        </div>
-
-        <div class="metric-note">
-            {result["x_note"]}
-        </div>
-
-    </div>
-    """)
-
-
-# IN-RATE AMOUNT
 
 with c3:
 
-    render_html(f"""
-    <div class="metric-card metric-orange">
+    st.metric(
+        label="IN-RATE AMOUNT",
+        value=f"₹{result['inrate_amount']:,.2f}"
+    )
 
-        <div class="metric-label">
-            IN-RATE AMOUNT
-        </div>
+    st.caption(
+        "X Amount + Internal COA"
+    )
 
-        <div class="metric-value">
-            ₹{result["inrate_amount"]:,.2f}
-        </div>
-
-        <div class="metric-note">
-            X Amount + Internal COA
-        </div>
-
-    </div>
-    """)
-
-
-# COA AMOUNT
 
 with c4:
 
-    render_html(f"""
-    <div class="metric-card metric-dark">
+    st.metric(
+        label="COA AMOUNT",
+        value=f"₹{result['coa_amount']:,.2f}"
+    )
 
-        <div class="metric-label">
-            COA AMOUNT
-        </div>
-
-        <div class="metric-value">
-            ₹{result["coa_amount"]:,.2f}
-        </div>
-
-        <div class="metric-note">
-            Internal backend calculation
-        </div>
-
-    </div>
-    """)
+    st.caption(
+        "Internal calculation"
+    )
 
 
 # ============================================================
 # FINAL RESULT
 # ============================================================
 
-render_html(f"""
-<div class="final-card">
+st.divider()
 
-    <div class="final-label">
-        FINAL IN-RATE PERCENTAGE
-    </div>
+final_col1, final_col2, final_col3 = st.columns([1, 2, 1])
 
-    <div class="final-value">
-        {result["inrate_percentage"]:.2f}%
-    </div>
+with final_col2:
 
-    <div class="final-note">
-        Calculated automatically based on the selected pricing structure
-    </div>
+    st.metric(
+        label="FINAL IN-RATE PERCENTAGE",
+        value=f"{result['inrate_percentage']:.2f}%"
+    )
 
-</div>
-""")
+
+# ============================================================
+# CALCULATION STATUS
+# ============================================================
+
+if client_rate > 0:
+
+    st.success(
+        "Client rate entered. X Amount is calculated after "
+        "subtracting the insurer gross rate and removing GST."
+    )
+
+else:
+
+    st.info(
+        "No client rate entered. X Amount shows the insurer "
+        "gross rate converted to the net amount excluding GST."
+    )
 
 
 # ============================================================
 # FOOTER
 # ============================================================
 
-render_html("""
-<div class="app-footer">
-    POLICYGRACE INSURANCE BROKING • INTERNAL USE ONLY
-</div>
-""")
+st.divider()
+
+st.caption(
+    "POLICYGRACE INSURANCE BROKING • INTERNAL USE ONLY"
+)
